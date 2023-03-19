@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Basic Data Server Monitor</title>
+  <link rel="stylesheet" href="index.css" />
+  <script src="render.js"></script>
+</head>
+
+<body>
+  <div class="drag-area">Basic Data Server Monitor</div>
+  <div id="main-scroll">
+    <div id="app">
+      <h1 id="warning">❗ Some servers deserve your attention</h1>
+      <button id="add-server" class="big-button">Add server</button>
+      <table>
+        <tbody id="table">
+          <tr>
+            <td>Statut</td>
+            <td>Nom</td>
+            <td>Identifiant</td>
+            <td>CPU</td>
+            <td>Mémoire</td>
+            <td>Plateforme</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+      <div id="footer">
+        <span id="loading">Loading...<br></span>
+        v0.0.1-dev
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

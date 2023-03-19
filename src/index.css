@@ -1,0 +1,89 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+  user-select: none;
+}
+.drag-area {
+  -webkit-app-region: drag;
+  height: 30px;
+  width: 100%;
+  background-color: #0072db;
+  color: white;
+  padding-left: 10px;
+  padding-top: 4px;
+  box-sizing: border-box;
+}
+body {
+  overflow: hidden;
+}
+#app {
+  margin: auto;
+  max-width: 50rem;
+  padding: 2rem;
+  height: min-content;
+}
+#main-scroll {
+  overflow: auto;
+  height: calc(100vh - 30px);
+}
+h1 {
+  float: left;
+  clear: both;
+}
+.big-button {
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+  background-color: rgb(0, 0, 155);
+  color: white;
+  margin: 15px;
+  transition: 0.3s ease;
+  float: right;
+}
+.big-button:hover {
+  background-color: rgb(8, 8, 104);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 5px 5px 20px #22222222;
+}
+tr td {
+  padding: 5px 15px;
+}
+tr:first-child {
+  background-color: #aaaaaa;
+  border-spacing: 0px;
+}
+tr:nth-child(n + 2):not(:last-child) {
+  border-bottom: solid #b6b6b6 0.5px;
+}
+tr:nth-child(n + 2):hover {
+  background-color: #aaaaaa55;
+}
+#footer {
+  margin: 25px auto;
+  box-sizing: border-box;
+  text-align: center;
+  color: #6b6b6b;
+}
+
+.delbtn {
+  padding: 5px 15px;
+  border: none;
+  cursor: pointer;
+  background-color: rgb(0, 0, 155);
+  margin: 2px;
+  transition: 0.3s ease;
+  float: right;
+}
+.delbtn svg {
+  width: 10px;
+  fill: white;
+}
+.delbtn:hover {
+  background-color: rgb(8, 8, 104);
+}
