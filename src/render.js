@@ -4,6 +4,7 @@ const fs = require("node:fs");
 const electron = require("electron");
 
 const addServerBtn = document.getElementById("add-server");
+let fileserverlist;
 
 electron.ipcRenderer.invoke("getDataPath").then(async (result) => {
   const filepath = path.join(result, "servers.json");
@@ -14,7 +15,6 @@ electron.ipcRenderer.invoke("getDataPath").then(async (result) => {
     return;
   }
 
-  const fileserverlist = require(filepath).servers;
   const warning = document.getElementById("warning");
   let warnStatus = false;
 
@@ -86,6 +86,7 @@ electron.ipcRenderer.invoke("getDataPath").then(async (result) => {
 
   function updateServerList() {
     warnStatus = false;
+    fileserverlist = JSON.parse(fs.readFileSync(filepath, "utf8")).servers;
     for (let [index, server] of fileserverlist.entries()) {
       updateServer(index, server);
     }
