@@ -4,16 +4,16 @@ const path = require("node:path"),
   fs = require("node:fs"),
   electron = require("electron");
 
-/* Usefull HTML elements */
-const addServerBtn = document.getElementById("add-server"),
-  warning = document.getElementById("warning");
-
 /* Global variables */
 let fileserverlist;
 let warnStatus = false;
 
 /* Main Function */
 electron.ipcRenderer.invoke("getDataPath").then(async (result) => {
+  /* Usefull HTML elements */
+  const addServerBtn = document.getElementById("add-server"),
+    warningDiv = document.getElementById("warning");
+
   const filepath = path.join(result, "servers.json");
   if (!fs.existsSync(filepath)) {
     console.log("no file, creating one");
@@ -84,7 +84,7 @@ electron.ipcRenderer.invoke("getDataPath").then(async (result) => {
 
     if (index == fileserverlist.length - 1) {
       document.getElementById("loading").innerHTML = "";
-      warning.innerHTML = warnStatus
+      warningDiv.innerHTML = warnStatus
         ? "❗ Some servers deserve your attention"
         : "✅ All servers are up and running";
     }
