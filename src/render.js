@@ -119,3 +119,7 @@ electron.ipcRenderer.invoke("getDataPath").then(async (result) => {
   updateServerList();
   setInterval(updateServerList, 2000);
 });
+
+electron.ipcRenderer.invoke("getAppVersion").then(async (result) => {
+  document.getElementById("version").innerHTML = result;
+});

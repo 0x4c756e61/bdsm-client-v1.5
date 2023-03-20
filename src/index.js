@@ -67,6 +67,7 @@ const createWindow = () => {
 };
 
 app.on("ready", createWindow);
+3;
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
@@ -83,6 +84,9 @@ app.on("activate", () => {
 /* Get data path for the renderer process */
 ipcMain.handle("getDataPath", () => {
   return app.getPath("userData");
+});
+ipcMain.handle("getAppVersion", () => {
+  return app.getVersion();
 });
 
 // Reload electron when file is edited in dev mode
