@@ -1,9 +1,11 @@
-const path = require("node:path");
-const axios = require("axios");
-const fs = require("node:fs");
-const electron = require("electron");
+const path = require("node:path"),
+  axios = require("axios"),
+  fs = require("node:fs"),
+  electron = require("electron");
 
-const addServerBtn = document.getElementById("add-server");
+const addServerBtn = document.getElementById("add-server"),
+  warning = document.getElementById("warning");
+
 let fileserverlist;
 
 electron.ipcRenderer.invoke("getDataPath").then(async (result) => {
@@ -15,7 +17,6 @@ electron.ipcRenderer.invoke("getDataPath").then(async (result) => {
     return;
   }
 
-  const warning = document.getElementById("warning");
   let warnStatus = false;
 
   async function updateServer(index, server) {
