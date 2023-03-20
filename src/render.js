@@ -25,12 +25,12 @@ let fileserverlist;
 let warnStatus = false;
 
 /* Main Function */
-electron.ipcRenderer.invoke("getDataPath").then(async (result) => {
+electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
   /* Usefull HTML elements */
   const addServerBtn = document.getElementById("add-server"),
     warningDiv = document.getElementById("warning");
 
-  const filepath = path.join(result, "servers.json");
+  const filepath = path.join(dataPath, "servers.json");
   if (!fs.existsSync(filepath)) {
     console.log("no file, creating one");
     fs.writeFileSync(filepath, `{"servers":[]}`);
@@ -57,6 +57,7 @@ electron.ipcRenderer.invoke("getDataPath").then(async (result) => {
           auth: server.password,
         },
       });
+      console.log(response.data);
 
       const data = JSON.parse(response.data);
 
@@ -108,6 +109,7 @@ electron.ipcRenderer.invoke("getDataPath").then(async (result) => {
 
   /* Update the server list */
   function updateServerList() {
+    console.log("Updating server list");
     warnStatus = false;
     fileserverlist = JSON.parse(fs.readFileSync(filepath, "utf8")).servers;
     for (let [index, server] of fileserverlist.entries()) {
@@ -118,8 +120,4 @@ electron.ipcRenderer.invoke("getDataPath").then(async (result) => {
   /* Do it and do it again */
   updateServerList();
   setInterval(updateServerList, 2000);
-});
-
-electron.ipcRenderer.invoke("getAppVersion").then(async (result) => {
-  document.getElementById("version").innerHTML = result;
 });
