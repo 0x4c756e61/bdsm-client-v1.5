@@ -85,6 +85,8 @@ app.on("activate", () => {
 ipcMain.handle("getDataPath", () => {
   return app.getPath("userData");
 });
+
+/* Get app version for the renderer process */
 ipcMain.handle("getAppVersion", () => {
   return app.getVersion();
 });

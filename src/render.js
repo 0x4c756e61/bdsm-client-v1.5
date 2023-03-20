@@ -122,6 +122,7 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
   setInterval(updateServerList, 2000);
 });
 
+/* Get the version number from the main process and display it */
 electron.ipcRenderer.invoke("getAppVersion").then(async (versionNumber) => {
   document.getElementById("version").innerHTML = versionNumber;
 });
