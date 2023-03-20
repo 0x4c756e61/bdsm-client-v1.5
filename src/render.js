@@ -1,26 +1,31 @@
+/* Dependencies */
 const path = require("node:path"),
   axios = require("axios"),
   fs = require("node:fs"),
   electron = require("electron");
 
+/* Usefull HTML elements */
 const addServerBtn = document.getElementById("add-server"),
   warning = document.getElementById("warning");
 
+/* Global variables */
 let fileserverlist;
+let warnStatus = false;
 
+/* Main Function */
 electron.ipcRenderer.invoke("getDataPath").then(async (result) => {
   const filepath = path.join(result, "servers.json");
-
   if (!fs.existsSync(filepath)) {
     console.log("no file, creating one");
     fs.writeFileSync(filepath, `{"servers":[]}`);
     return;
   }
 
-  let warnStatus = false;
-
+  /* At each data change, update the selected server in the list */
   async function updateServer(index, server) {
+    /* Try/Catch to detect if server is not responding */
     try {
+      /* Create the div before the fetch to avoid disordered data in the list */
       let div = document.querySelector(`#server-${index}`);
       if (!div) {
         document.querySelector(
@@ -85,6 +90,7 @@ electron.ipcRenderer.invoke("getDataPath").then(async (result) => {
     }
   }
 
+  /* Update the server list */
   function updateServerList() {
     warnStatus = false;
     fileserverlist = JSON.parse(fs.readFileSync(filepath, "utf8")).servers;
@@ -93,6 +99,7 @@ electron.ipcRenderer.invoke("getDataPath").then(async (result) => {
     }
   }
 
+  /* Do it and do it again */
   updateServerList();
   setInterval(updateServerList, 2000);
 });

@@ -1,11 +1,14 @@
+/* Dependencies */
 const { app, BrowserWindow, ipcMain } = require("electron"),
   fs = require("node:fs"),
   path = require("node:path");
 
+/* Prevent electron from doing shit when installing */
 if (require("electron-squirrel-startup")) {
   app.quit();
 }
 
+/* Create window */
 const createWindow = () => {
   var initPath = path.join(app.getPath("userData"), "window.json");
   var data;
@@ -38,6 +41,7 @@ const createWindow = () => {
 
   mainWindow.webContents.openDevTools();
 
+  /* Save window position and size on close */
   mainWindow.on("close", function () {
     var data = {
       bounds: mainWindow.getBounds(),
@@ -60,12 +64,12 @@ app.on("activate", () => {
   }
 });
 
+/* Get data path for the renderer process */
 ipcMain.handle("getDataPath", () => {
   return app.getPath("userData");
 });
 
 // Reload electron when file is edited in dev mode
-
 // try {
 //   require("electron-reloader")(module);
 // } catch {}
