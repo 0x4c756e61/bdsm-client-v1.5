@@ -4,7 +4,7 @@ Under development
 
 ## To Do
 
-- [ ] Add the "Add server" window
+- [x] Add the "Add server" window
 - [ ] Code the "Delete server" button
 - [ ] Add "Edit server" button
 - [ ] Add "More details about the server status" window

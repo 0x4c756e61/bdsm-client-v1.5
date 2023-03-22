@@ -28,7 +28,25 @@ let warnStatus = false;
 electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
   /* Usefull HTML elements */
   const addServerBtn = document.getElementById("add-server"),
-    warningDiv = document.getElementById("warning");
+        warningDiv = document.getElementById("warning"),
+        addServerModal = document.getElementById("modal"),
+        saveServerBtn = document.getElementById("modal-content-addbtn");
+
+  /* Modal input fields */
+  const inputPrettyName = document.getElementById("modal-content-prettyname"),
+        inputIP = document.getElementById("modal-content-ip"),
+        inputPort = document.getElementById("modal-content-port"),
+        inputPasswd = document.getElementById("modal-content-passwd");
+
+  addServerBtn.addEventListener("click", () => {
+    addServerModal.style.setProperty("display", "block");
+  })
+
+  window.addEventListener("click", e => {
+    if (e.target == addServerModal) {
+      addServerModal.style.setProperty("display", "none");
+    }
+  })
 
   const filepath = path.join(dataPath, "servers.json");
   if (!fs.existsSync(filepath)) {
@@ -36,6 +54,20 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
     fs.writeFileSync(filepath, `{"servers":[]}`);
     return;
   }
+
+  saveServerBtn.addEventListener("click", () => {
+    let serverJson = JSON.parse(fs.readFileSync(filepath));
+    serverJson["servers"].push(JSON.parse(`{
+      "prettyname": "${inputPrettyName.value}",
+      "ip": "${inputIP.value}",
+      "port": ${inputPort.value},
+      "password": "${inputPasswd.value}"
+    }`));
+    
+    // console.log(JSON.stringify(serverJson));
+    fs.writeFileSync(filepath, JSON.stringify(serverJson));
+    addServerModal.style.setProperty("display", "none");
+  })
 
   /* At each data change, update the selected server in the list */
   async function updateServer(index, server) {
@@ -45,8 +77,10 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
       let div = document.querySelector(`#server-${index}`);
       if (!div) {
         document.querySelector(
-          "#table"
-        ).innerHTML += `<tr id="server-${index}" class="server"></tr>`;
+          "#gridLayout"
+        ).innerHTML += `
+        <div class="card" id="server-${index}"></div>
+        `;
       }
 
       const response = await axios({
@@ -57,53 +91,55 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
           auth: server.password,
         },
       });
-      console.log(response.data);
+      // console.log(response.data);
 
+      let outlineColor = "#2eff8c";
       const data = JSON.parse(response.data);
-
-      div.innerHTML = `<td>🟢</td>
-        <td>${server.prettyname}</td>
-        <td>${data.serverId}</td>
-        <td>${data.cpuUsage.toFixed(2)}%</td>
-        <td>${data.ramUsage} (${data.ramPercent})</td>
-        <td>${data.osPlatform}</td>
-        <td><button class="delbtn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Pro 6.3.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg></button></td>`;
+      div.style.setProperty("--outline-color", outlineColor)
+      div.innerHTML = `<div class="card-title">${server.prettyname.toLowerCase()} <span id="card-id">(${data.serverId})</span></div>
+      <div class="card-platform">Running: ${data.osPlatform}</div>
+      <div class="card-usage">RAM: ${data.ramUsage} (${data.ramPercent})</div>
+      <div class="card-cpu-usage">CPU: ${data.cpuUsage.toFixed(2)} %</div>
+      <div class="card-status">🟢</div>`;
     } catch (error) {
       let div = document.querySelector(`#server-${index}`);
       if (!div) {
         document.querySelector(
-          "#table"
-        ).innerHTML += `<tr id="server-${index}" class="server"></tr>`;
+          "#gridLayout"
+        ).innerHTML += `<div id="server-${index}" class="card"></div>`;
       }
       warnStatus = true;
       let status = "🔴";
+      let outlineColor = "#ff4943";
       if (error.response) {
         switch (error.response.status) {
           case 200:
             status = "🟢";
+            outlineColor = "#2eff8c";
             break;
           case 403:
             status = "🔐";
+            outlineColor = "#f1ff73";
             break;
           default:
             status = "🟠";
+            outlineColor = "#ffa83e"
             break;
         }
       }
-      div.innerHTML = `<td>${status}</td>
-        <td>${server.prettyname}</td>
-        <td>---</td>
-        <td>---%</td>
-        <td>--- (---)</td>
-        <td>---</td>
-        <td><button class="delbtn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Pro 6.3.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg></button></td>`;
+      div.style.setProperty("--outline-color", outlineColor)
+      div.innerHTML = `<div class="card-title">${server.prettyname.toLowerCase()} <span id="card-id">(-----)</span></div>
+      <div class="card-platform">Running: -----</div>
+      <div class="card-usage">RAM: ----- (----- %)</div>
+      <div class="card-cpu-usage">CPU: ----- %</div>
+      <div class="card-status">${status}</div>`;
     }
 
     if (index == fileserverlist.length - 1) {
       document.getElementById("loading").innerHTML = "";
       warningDiv.innerHTML = warnStatus
-        ? "❗ Some servers deserve your attention"
-        : "✅ All servers are up and running";
+        ? "❗ some servers deserve your attention"
+        : "✅ all servers are up and running";
     }
   }
 
