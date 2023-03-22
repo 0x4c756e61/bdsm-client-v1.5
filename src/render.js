@@ -28,9 +28,25 @@ let warnStatus = false;
 electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
   /* Usefull HTML elements */
   const addServerBtn = document.getElementById("add-server"),
-    warningDiv = document.getElementById("warning");
+        warningDiv = document.getElementById("warning"),
+        addServerModal = document.getElementById("modal"),
+        saveServerBtn = document.getElementById("modal-content-addbtn");
 
-  console.log(dataPath)
+  /* Modal input fields */
+  const inputPrettyName = document.getElementById("modal-content-prettyname"),
+        inputIP = document.getElementById("modal-content-ip"),
+        inputPort = document.getElementById("modal-content-port"),
+        inputPasswd = document.getElementById("modal-content-passwd");
+
+  addServerBtn.addEventListener("click", () => {
+    addServerModal.style.setProperty("display", "block");
+  })
+
+  window.addEventListener("click", e => {
+    if (e.target == addServerModal) {
+      addServerModal.style.setProperty("display", "none");
+    }
+  })
 
   const filepath = path.join(dataPath, "servers.json");
   if (!fs.existsSync(filepath)) {
@@ -38,6 +54,20 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
     fs.writeFileSync(filepath, `{"servers":[]}`);
     return;
   }
+
+  saveServerBtn.addEventListener("click", () => {
+    let serverJson = JSON.parse(fs.readFileSync(filepath));
+    serverJson["servers"].push(JSON.parse(`{
+      "prettyname": "${inputPrettyName.value}",
+      "ip": "${inputIP.value}",
+      "port": ${inputPort.value},
+      "password": "${inputPasswd.value}"
+    }`));
+    
+    // console.log(JSON.stringify(serverJson));
+    fs.writeFileSync(filepath, JSON.stringify(serverJson));
+    addServerModal.style.setProperty("display", "none");
+  })
 
   /* At each data change, update the selected server in the list */
   async function updateServer(index, server) {
