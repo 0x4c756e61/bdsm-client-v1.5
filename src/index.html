@@ -25,24 +25,36 @@ limitations under the License.
 </head>
 
 <body>
-  <div class="drag-area">Basic Data Server Monitor</div>
+  <div class="drag-area"><img id="logo"  src="https://avatars.githubusercontent.com/u/40271484?v=4"></div>
   <div id="main-scroll">
     <div id="app">
-      <h1 id="warning">❗ Some servers deserve your attention</h1>
+      <h1 id="warning">🟡 some servers deserve your attention</h1>
       <button id="add-server" class="big-button">Add server</button>
-      <table>
-        <tbody id="table">
-          <tr>
-            <td>Statut</td>
-            <td>Nom</td>
-            <td>Identifiant</td>
-            <td>CPU</td>
-            <td>Mémoire</td>
-            <td>Plateforme</td>
-            <td></td>
-          </tr>
-        </tbody>
-      </table>
+
+      <div id="gridLayout">
+        <!-- Example cards, they serve no purpose besides helping for ui design-->
+        <!-- <div class="card">
+          <div class="card-title">my local server <span id="card-id">(dev)</span></div>
+          <div class="card-platform">Running: GNU/Linux</div>
+          <div class="card-usage">RAM: 300/2048 MB</div>
+          <div class="card-cpu-usage">CPU: 10 %</div>
+          <div class="card-status">🟢</div>
+        </div>
+        <div class="card">
+          <div class="card-title">my remote server <span id="card-id">(prod)</span></div>
+          <div class="card-platform">Running: MS/Windows</div>
+          <div class="card-usage">RAM: 18/24 GB</div>
+          <div class="card-cpu-usage">CPU: 69 %</div>
+          <div class="card-status">🔴</div>
+        </div>
+        <div class="card">
+          <div class="card-title">my testing server <span id="card-id">(testing)</span></div>
+          <div class="card-platform">Running: GNU/Linux</div>
+          <div class="card-usage">RAM: 1027/2048 MB</div>
+          <div class="card-cpu-usage">CPU: 31 %</div>
+          <div class="card-status">🟢</div>
+        </div> -->
+      </div>
       <div id="footer">
         <span id="loading">Loading...<br></span>
         <span id="version">...</span>

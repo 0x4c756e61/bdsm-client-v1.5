@@ -13,98 +13,149 @@ Copyright 2023 Firmin B.
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600 &display=swap');
 * {
-  margin: 0;
-  padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif;
-  user-select: none;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    user-select: none;
 }
 body {
-  overflow: hidden;
+    overflow: hidden;
+    background-color: #13111c;
 }
 
 .drag-area {
-  -webkit-app-region: drag;
-  height: 30px;
-  width: 100%;
-  background-color: #0072db;
-  color: white;
-  padding-left: 10px;
-  padding-top: 4px;
-  box-sizing: border-box;
+    -webkit-app-region: drag;
+    height: 30px;
+    width: 100%;
+    /* background-color: #0072db; */
+    color: white;
+    padding-left: 10px;
+    padding-top: 10px;
+    box-sizing: border-box;
 }
 
 #app {
-  margin: auto;
-  max-width: 50rem;
-  padding: 2rem;
-  height: min-content;
+    margin: auto;
+    max-width: 50rem;
+    padding: 2rem;
+    height: min-content;
 }
 #main-scroll {
-  overflow: auto;
-  height: calc(100vh - 30px);
+    overflow: auto;
+    height: calc(100vh - 30px);
 }
 
 h1 {
-  float: left;
-  clear: both;
+    float: left;
+    clear: both;
 }
 
 .big-button {
-  padding: 5px 10px;
-  border: none;
-  cursor: pointer;
-  background-color: rgb(0, 0, 155);
-  color: white;
-  margin: 15px;
-  transition: 0.3s ease;
-  float: right;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    background-color: #13111c;
+    border-radius: 3px;
+    color: white;
+    margin: 15px;
+    transition: 0.3s ease;
+    float: right;
+    outline: solid 1px hsl(246, 11%, 22%);
 }
 .big-button:hover {
-  background-color: rgb(8, 8, 104);
+    background-color: #211f2d;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  box-shadow: 5px 5px 20px #22222222;
+#logo {
+    margin: none;
+    border-radius: 100%;
+    height: 40px;
 }
+
+#gridLayout {
+    width: 100%;
+    border-collapse: collapse;
+    box-shadow: 5px 5px 20px #22222222;
+    display: grid;
+    grid-template-columns: 3fr 3fr 3fr;
+    gap: 30px;
+}
+
+.card {
+    width: 100%;
+    min-width: 120px;
+    height: 110px;
+    border-radius: 10px;
+    background-color: #211f2d;
+    padding-left: 10px;
+    padding-top: 10px;
+    color: white;
+    outline: 2px solid var(--outline-color);
+}
+
+.card-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-variant: small-caps;
+    margin-bottom: 5px;
+    font-size: 1.25em;
+}
+
+.card-status {
+    position: relative;
+    text-align: end;
+    top: -15px;
+    right: 10px;
+
+}
+
+#card-id {
+    font-weight: 400;
+    color: #aaaaaac2;
+}
+
 tr td {
-  padding: 5px 15px;
+    padding: 5px 15px;
 }
 tr:first-child {
-  background-color: #aaaaaa;
-  border-spacing: 0px;
+    background-color: #aaaaaa;
+    border-spacing: 0;
 }
 tr:nth-child(n + 2):not(:last-child) {
-  border-bottom: solid #b6b6b6 0.5px;
+    border-bottom: solid #b6b6b6 0.5px;
 }
 tr:nth-child(n + 2):hover {
-  background-color: #aaaaaa55;
+    background-color: #aaaaaa55;
 }
 
 .delbtn {
-  padding: 5px 15px;
-  border: none;
-  cursor: pointer;
-  background-color: rgb(0, 0, 155);
-  margin: 2px;
-  transition: 0.3s ease;
-  float: right;
+    padding: 5px 15px;
+    border: none;
+    cursor: pointer;
+    background-color: rgb(0, 0, 155);
+    margin: 2px;
+    transition: 0.3s ease;
+    float: right;
 }
 .delbtn svg {
-  width: 10px;
-  fill: white;
+    width: 10px;
+    fill: white;
 }
 .delbtn:hover {
-  background-color: rgb(8, 8, 104);
+    background-color: rgb(8, 8, 104);
 }
 
 #footer {
-  margin: 25px auto;
-  box-sizing: border-box;
-  text-align: center;
-  color: #6b6b6b;
+    margin: 25px auto;
+    box-sizing: border-box;
+    text-align: center;
+    color: #6b6b6b;
+}
+
+#warning {
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-variant: small-caps;
 }
