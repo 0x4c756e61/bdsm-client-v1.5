@@ -28,17 +28,17 @@ let editingIndex = -1;
 /* Main Function */
 electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
   /* Usefull HTML elements */
-  const addServerBtn = document.getElementById("add-server"),
-    warningDiv = document.getElementById("warning"),
-    addServerModal = document.getElementById("modal"),
-    saveServerBtn = document.getElementById("modal-content-addbtn");
+  const addServerBtn = document.querySelector("#add-server"),
+    warningDiv = document.querySelector("#warning"),
+    addServerModal = document.querySelector("#modal"),
+    saveServerBtn = document.querySelector("#modal-content-addbtn");
 
   /* Modal input fields and related elements */
-  const inputPrettyName = document.getElementById("modal-content-prettyname"),
-    inputIP = document.getElementById("modal-content-ip"),
-    inputPort = document.getElementById("modal-content-port"),
-    inputPasswd = document.getElementById("modal-content-passwd"),
-    modalTitle = document.getElementById("modal-content-title");
+  const inputPrettyName = document.querySelector("#modal-content-prettyname"),
+    inputIP = document.querySelector("#modal-content-ip"),
+    inputPort = document.querySelector("#modal-content-port"),
+    inputPasswd = document.querySelector("#modal-content-passwd"),
+    modalTitle = document.querySelector("#modal-content-title");
 
   addServerBtn.addEventListener("click", () => {
     modalTitle.innerHTML = "New Server";
@@ -77,7 +77,6 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
       serverJson["servers"][index] = newJson;
     }
 
-    // console.log(JSON.stringify(serverJson));
     fs.writeFileSync(filepath, JSON.stringify(serverJson));
   }
 
@@ -100,7 +99,7 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
     fs.writeFileSync(filepath, JSON.stringify(serverJson));
     document.querySelector("#gridLayout").innerHTML = "";
     updateServers();
-    document.getElementById("loading").innerHTML = "Loading...";
+    document.querySelector("#loading").innerHTML = "Loading...";
   };
 
   window.editServer = (index) => {
@@ -114,9 +113,6 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
     editingIndex = index;
   };
 
-  // window.querySelectorAll("#card-delete").forEach(e => {
-  //   console.log(e)
-  // });
   /* At each data change, update the selected server in the list */
   async function updateServer(index, server) {
     /* Try/Catch to detect if server is not responding */
@@ -137,7 +133,6 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
           auth: server.password,
         },
       });
-      // console.log(response.data);
 
       let outlineColor = "#2eff8c";
       const data = JSON.parse(response.data);
@@ -194,7 +189,7 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
     }
 
     if (index == fileserverlist.length - 1) {
-      document.getElementById("loading").innerHTML = "";
+      document.querySelector("#loading").innerHTML = "";
       warningDiv.innerHTML = warnStatus
         ? "❗ some servers deserve your attention"
         : "✅ all servers are up and running";
@@ -218,5 +213,5 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
 
 /* Get the version number from the main process and display it */
 electron.ipcRenderer.invoke("getAppVersion").then(async (versionNumber) => {
-  document.getElementById("version").innerHTML = versionNumber;
+  document.querySelector("#version").innerHTML = versionNumber;
 });
