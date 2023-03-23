@@ -48,6 +48,11 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
   window.addEventListener("click", (e) => {
     if (e.target == addServerModal) {
       addServerModal.style.setProperty("display", "none");
+      inputPrettyName.value = "";
+      inputIP.value = "";
+      inputPort.value = "";
+      inputPasswd.value = "";
+      editingIndex = -1;
     }
   });
 
