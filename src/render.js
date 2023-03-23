@@ -69,6 +69,16 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
     addServerModal.style.setProperty("display", "none");
   })
 
+  window.deleteServer = (index) => {
+    document.querySelector(`#server-${index}`).remove();
+    let serverJson = JSON.parse(fs.readFileSync(filepath));
+    serverJson["servers"] = serverJson["servers"].splice(index, index)
+    fs.writeFileSync(filepath, JSON.stringify(serverJson));
+  }
+
+  // window.querySelectorAll("#card-delete").forEach(e => {
+  //   console.log(e)
+  // });
   /* At each data change, update the selected server in the list */
   async function updateServer(index, server) {
     /* Try/Catch to detect if server is not responding */
@@ -96,7 +106,10 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
       let outlineColor = "#2eff8c";
       const data = JSON.parse(response.data);
       div.style.setProperty("--outline-color", outlineColor)
-      div.innerHTML = `<div class="card-title">${server.prettyname.toLowerCase()} <span id="card-id">(${data.serverId})</span></div>
+      div.innerHTML = `<div onclick="window.deleteServer(${index});" class="card-delete">
+      <svg aria-hidden="true" role="img" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M15 3.999V2H9V3.999H3V5.999H21V3.999H15Z"></path><path fill="currentColor" d="M5 6.99902V18.999C5 20.101 5.897 20.999 7 20.999H17C18.103 20.999 19 20.101 19 18.999V6.99902H5ZM11 17H9V11H11V17ZM15 17H13V11H15V17Z"></path></svg>
+    </div>
+      <div class="card-title">${server.prettyname.toLowerCase()} <span id="card-id">(${data.serverId})</span></div>
       <div class="card-platform">Running: ${data.osPlatform}</div>
       <div class="card-usage">RAM: ${data.ramUsage} (${data.ramPercent})</div>
       <div class="card-cpu-usage">CPU: ${data.cpuUsage.toFixed(2)} %</div>
@@ -128,7 +141,10 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
         }
       }
       div.style.setProperty("--outline-color", outlineColor)
-      div.innerHTML = `<div class="card-title">${server.prettyname.toLowerCase()} <span id="card-id">(-----)</span></div>
+      div.innerHTML = `<div onclick="window.deleteServer(${index});" class="card-delete">
+      <svg aria-hidden="true" role="img" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M15 3.999V2H9V3.999H3V5.999H21V3.999H15Z"></path><path fill="currentColor" d="M5 6.99902V18.999C5 20.101 5.897 20.999 7 20.999H17C18.103 20.999 19 20.101 19 18.999V6.99902H5ZM11 17H9V11H11V17ZM15 17H13V11H15V17Z"></path></svg>
+    </div>
+      <div class="card-title">${server.prettyname.toLowerCase()} <span id="card-id">(-----)</span></div>
       <div class="card-platform">Running: -----</div>
       <div class="card-usage">RAM: ----- (----- %)</div>
       <div class="card-cpu-usage">CPU: ----- %</div>

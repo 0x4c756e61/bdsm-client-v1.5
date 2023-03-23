@@ -84,6 +84,7 @@ h1 {
 }
 
 .card {
+    position: relative;
     width: 100%;
     min-width: 120px;
     height: 110px;
@@ -101,6 +102,9 @@ h1 {
     font-variant: small-caps;
     margin-bottom: 5px;
     font-size: 1.25em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .card-status {
@@ -109,6 +113,27 @@ h1 {
     top: -15px;
     right: 10px;
 
+}
+
+.card-delete {
+    display: flex;
+    position: absolute;
+    top:-5px;
+    right: -5px;
+    background-color: hsl(246, 11%, 22%);
+    padding: 5px;
+    border-radius: 3px;
+    opacity: 0;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.card:hover .card-delete {
+    opacity: 1;
+}
+
+.card-delete:hover {
+    background-color: #ff4943;
 }
 
 #card-id {
@@ -128,23 +153,6 @@ tr:nth-child(n + 2):not(:last-child) {
 }
 tr:nth-child(n + 2):hover {
     background-color: #aaaaaa55;
-}
-
-.delbtn {
-    padding: 5px 15px;
-    border: none;
-    cursor: pointer;
-    background-color: rgb(0, 0, 155);
-    margin: 2px;
-    transition: 0.3s ease;
-    float: right;
-}
-.delbtn svg {
-    width: 10px;
-    fill: white;
-}
-.delbtn:hover {
-    background-color: rgb(8, 8, 104);
 }
 
 #footer {
