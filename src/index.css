@@ -115,17 +115,20 @@ h1 {
 
 }
 
-.card-delete {
+.card-btn {
     display: flex;
     position: absolute;
     top:-5px;
-    right: -5px;
     background-color: hsl(246, 11%, 22%);
     padding: 5px;
     border-radius: 3px;
     opacity: 0;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
+}
+
+.card-delete {
+    right: -5px;
 }
 
 .card:hover .card-delete {
@@ -135,6 +138,20 @@ h1 {
 .card-delete:hover {
     background-color: #ff4943;
 }
+
+
+.card-edit {
+    left: -5px;
+}
+
+.card:hover .card-edit {
+    opacity: 1;
+}
+
+.card-edit:hover {
+    background-color: #ff4943;
+}
+
 
 #card-id {
     font-weight: 400;
