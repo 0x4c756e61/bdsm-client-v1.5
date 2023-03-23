@@ -29,27 +29,27 @@ let editingIndex = -1;
 electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
   /* Usefull HTML elements */
   const addServerBtn = document.getElementById("add-server"),
-        warningDiv = document.getElementById("warning"),
-        addServerModal = document.getElementById("modal"),
-        saveServerBtn = document.getElementById("modal-content-addbtn");
+    warningDiv = document.getElementById("warning"),
+    addServerModal = document.getElementById("modal"),
+    saveServerBtn = document.getElementById("modal-content-addbtn");
 
   /* Modal input fields and related elements */
   const inputPrettyName = document.getElementById("modal-content-prettyname"),
-        inputIP = document.getElementById("modal-content-ip"),
-        inputPort = document.getElementById("modal-content-port"),
-        inputPasswd = document.getElementById("modal-content-passwd"),
-        modalTitle = document.getElementById("modal-content-title");
+    inputIP = document.getElementById("modal-content-ip"),
+    inputPort = document.getElementById("modal-content-port"),
+    inputPasswd = document.getElementById("modal-content-passwd"),
+    modalTitle = document.getElementById("modal-content-title");
 
   addServerBtn.addEventListener("click", () => {
     modalTitle.innerHTML = "New Server";
     addServerModal.style.setProperty("display", "block");
-  })
+  });
 
-  window.addEventListener("click", e => {
+  window.addEventListener("click", (e) => {
     if (e.target == addServerModal) {
       addServerModal.style.setProperty("display", "none");
     }
-  })
+  });
 
   const filepath = path.join(dataPath, "servers.json");
   if (!fs.existsSync(filepath)) {
@@ -68,11 +68,10 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
       }`);
     if (index == -1) {
       serverJson["servers"].push(newJson);
+    } else {
+      serverJson["servers"][index] = newJson;
     }
-    else {
-      serverJson["servers"][index] = newJson
-    }
-  
+
     // console.log(JSON.stringify(serverJson));
     fs.writeFileSync(filepath, JSON.stringify(serverJson));
   }
@@ -85,26 +84,30 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
     inputPort.value = "";
     inputPasswd.value = "";
     editingIndex = -1;
-    
-  })
+  });
 
   window.deleteServer = (index) => {
     document.querySelector(`#server-${index}`).remove();
     let serverJson = JSON.parse(fs.readFileSync(filepath));
-    serverJson["servers"] = serverJson["servers"].splice(index, index)
+    console.log(serverJson["servers"]);
+    serverJson["servers"].splice(index, 1);
+    console.log(serverJson["servers"]);
     fs.writeFileSync(filepath, JSON.stringify(serverJson));
-  }
+    document.querySelector("#gridLayout").innerHTML = "";
+    updateServers();
+    document.getElementById("loading").innerHTML = "Loading...";
+  };
 
   window.editServer = (index) => {
     let serverJson = JSON.parse(fs.readFileSync(filepath));
     modalTitle.innerHTML = "Edit Server";
-    inputPrettyName.value = serverJson["servers"][index].prettyname
-    inputIP.value = serverJson["servers"][index].ip
-    inputPort.value = serverJson["servers"][index].port
-    inputPasswd.value = serverJson["servers"][index].password
+    inputPrettyName.value = serverJson["servers"][index].prettyname;
+    inputIP.value = serverJson["servers"][index].ip;
+    inputPort.value = serverJson["servers"][index].port;
+    inputPasswd.value = serverJson["servers"][index].password;
     addServerModal.style.setProperty("display", "block");
     editingIndex = index;
-  }
+  };
 
   // window.querySelectorAll("#card-delete").forEach(e => {
   //   console.log(e)
@@ -116,9 +119,7 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
       /* Create the div before the fetch to avoid disordered data in the list */
       let div = document.querySelector(`#server-${index}`);
       if (!div) {
-        document.querySelector(
-          "#gridLayout"
-        ).innerHTML += `
+        document.querySelector("#gridLayout").innerHTML += `
         <div class="card" id="server-${index}"></div>
         `;
       }
@@ -135,13 +136,15 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
 
       let outlineColor = "#2eff8c";
       const data = JSON.parse(response.data);
-      div.style.setProperty("--outline-color", outlineColor)
+      div.style.setProperty("--outline-color", outlineColor);
       div.innerHTML = `<div onclick="window.editServer(${index})" class="card-btn card-edit">
       <svg aria-hidden="true" role="img" width="16" height="16" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.2929 9.8299L19.9409 9.18278C21.353 7.77064 21.353 5.47197 19.9409 4.05892C18.5287 2.64678 16.2292 2.64678 14.817 4.05892L14.1699 4.70694L19.2929 9.8299ZM12.8962 5.97688L5.18469 13.6906L10.3085 18.813L18.0201 11.0992L12.8962 5.97688ZM4.11851 20.9704L8.75906 19.8112L4.18692 15.239L3.02678 19.8796C2.95028 20.1856 3.04028 20.5105 3.26349 20.7337C3.48669 20.9569 3.8116 21.046 4.11851 20.9704Z" fill="currentColor"></path></svg>
     </div><div onclick="window.deleteServer(${index});" class="card-btn card-delete">
       <svg aria-hidden="true" role="img" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M15 3.999V2H9V3.999H3V5.999H21V3.999H15Z"></path><path fill="currentColor" d="M5 6.99902V18.999C5 20.101 5.897 20.999 7 20.999H17C18.103 20.999 19 20.101 19 18.999V6.99902H5ZM11 17H9V11H11V17ZM15 17H13V11H15V17Z"></path></svg>
     </div>
-      <div class="card-title">${server.prettyname.toLowerCase()} <span id="card-id">(${data.serverId})</span></div>
+      <div class="card-title">${server.prettyname.toLowerCase()} <span id="card-id">(${
+        data.serverId
+      })</span></div>
       <div class="card-platform">Running: ${data.osPlatform}</div>
       <div class="card-usage">RAM: ${data.ramUsage} (${data.ramPercent})</div>
       <div class="card-cpu-usage">CPU: ${data.cpuUsage.toFixed(2)} %</div>
@@ -168,11 +171,11 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
             break;
           default:
             status = "🟠";
-            outlineColor = "#ffa83e"
+            outlineColor = "#ffa83e";
             break;
         }
       }
-      div.style.setProperty("--outline-color", outlineColor)
+      div.style.setProperty("--outline-color", outlineColor);
       div.innerHTML = `<div onclick="window.editServer(${index})" class="card-btn card-edit">
       <svg aria-hidden="true" role="img" width="16" height="16" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.2929 9.8299L19.9409 9.18278C21.353 7.77064 21.353 5.47197 19.9409 4.05892C18.5287 2.64678 16.2292 2.64678 14.817 4.05892L14.1699 4.70694L19.2929 9.8299ZM12.8962 5.97688L5.18469 13.6906L10.3085 18.813L18.0201 11.0992L12.8962 5.97688ZM4.11851 20.9704L8.75906 19.8112L4.18692 15.239L3.02678 19.8796C2.95028 20.1856 3.04028 20.5105 3.26349 20.7337C3.48669 20.9569 3.8116 21.046 4.11851 20.9704Z" fill="currentColor"></path></svg>
     </div><div onclick="window.deleteServer(${index});" class="card-btn card-delete">
