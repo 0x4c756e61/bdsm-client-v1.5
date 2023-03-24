@@ -1,4 +1,5 @@
-# Basic Data Server Monitor (Client)
+<img src="src/assets/readmeBanner.png" alt="Banner" width="100%">
+<h1 align="center">Basic Data Server Monitor</h1>
 
 This app is in development, so it's not ready for production use.
 
