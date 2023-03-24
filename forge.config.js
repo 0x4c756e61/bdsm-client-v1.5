@@ -13,15 +13,12 @@ Copyright 2023 Firmin B.
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+require("dotenv").config();
 
 module.exports = {
   packagerConfig: {},
   rebuildConfig: {},
   makers: [
-    {
-      name: "@electron-forge/maker-squirrel",
-      config: {},
-    },
     {
       name: "@electron-forge/maker-zip",
       platforms: ["darwin"],
@@ -37,6 +34,30 @@ module.exports = {
     {
       name: "@electron-forge/maker-rpm",
       config: {},
+    },
+    {
+      name: "@electron-forge/maker-wix",
+      config: {
+        language: 1033,
+        manufacturer: "Firmin_",
+        description: "Server monitoring tool",
+        icon: "src/assets/icon.ico",
+        name: "BDSM Client",
+        appUserModelId: "com.firmin.bdsm.client",
+      },
+    },
+  ],
+  publishers: [
+    {
+      name: "@electron-forge/publisher-github",
+      config: {
+        repository: {
+          owner: "firminsurgithub",
+          name: "bdsm-client",
+        },
+        prerelease: true,
+        authToken: process.env.GITHUB_TOKEN,
+      },
     },
   ],
 };

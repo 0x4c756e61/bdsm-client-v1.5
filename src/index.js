@@ -19,11 +19,6 @@ const { app, BrowserWindow, ipcMain } = require("electron"),
   fs = require("node:fs"),
   path = require("node:path");
 
-/* Prevent electron from doing shit when installing */
-if (require("electron-squirrel-startup")) {
-  app.quit();
-}
-
 /* Create window */
 const createWindow = () => {
   var initPath = path.join(app.getPath("userData"), "window.json");
