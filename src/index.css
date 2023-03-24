@@ -194,6 +194,10 @@ tr:nth-child(n + 2):hover {
 }
 
 #modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   background-color: #181622;
   border-radius: 3px;
   color: white;
@@ -201,7 +205,6 @@ tr:nth-child(n + 2):hover {
   gap: 5px;
   grid-template-rows: repeat(1fr, 10);
   height: fit-content;
-  margin: 15% auto;
   min-width: 420px;
   outline: solid 1px hsl(246, 11%, 22%);
   padding: 20px;
