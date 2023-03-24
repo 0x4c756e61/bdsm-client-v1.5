@@ -68,7 +68,7 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
     let newJson = JSON.parse(`{
         "prettyname": "${inputPrettyName.value}",
         "ip": "${inputIP.value}",
-        "port": ${inputPort.value},
+        "port": ${inputPort.value ? inputPort.value : 3040},
         "password": "${inputPasswd.value}"
       }`);
     if (index == -1) {
@@ -98,8 +98,8 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
     console.log(serverJson["servers"]);
     fs.writeFileSync(filepath, JSON.stringify(serverJson));
     document.querySelector("#gridLayout").innerHTML = "";
-    updateServers();
     document.querySelector("#loading").innerHTML = "Loading...";
+    updateServers();
   };
 
   window.editServer = (index) => {
