@@ -71,7 +71,6 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
   }
 
   function saveServer(index) {
-    let serverJson = JSON.parse(fs.readFileSync(filepath));
     let errorform = false;
     if (!inputPrettyName.value) {
       inputPrettyName.style.setProperty("border", "1px solid red");
@@ -98,20 +97,26 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
       return;
     }
 
-    let newJson = JSON.parse(`{
-        "prettyname": "${inputPrettyName.value}",
-        "ip": "${inputIP.value}",
-        "port": ${inputPort.value ? inputPort.value : 3040},
-        "password": "${inputPasswd.value}"
-      }`);
+    let newJson = {
+      prettyname: inputPrettyName.value,
+      ip: inputIP.value,
+      port: inputPort.value ? inputPort.value : 3040,
+      password: inputPasswd.value,
+    };
     if (index == -1) {
-      serverJson["servers"].push(newJson);
+      fileserverlist.push(newJson);
     } else {
-      serverJson["servers"][index] = newJson;
+      fileserverlist = newJson;
     }
 
-    fs.writeFileSync(filepath, JSON.stringify(serverJson));
+    fs.writeFileSync(
+      filepath,
+      JSON.stringify({
+        servers: fileserverlist,
+      })
+    );
     resetModal();
+    updateServerList();
   }
 
   saveServerBtn.addEventListener("click", () => {
@@ -121,23 +126,19 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
 
   window.deleteServer = (index) => {
     document.querySelector(`#server-${index}`).remove();
-    let serverJson = JSON.parse(fs.readFileSync(filepath));
-    console.log(serverJson["servers"]);
-    serverJson["servers"].splice(index, 1);
-    console.log(serverJson["servers"]);
-    fs.writeFileSync(filepath, JSON.stringify(serverJson));
+    fileserverlist.splice(index, 1);
+    fs.writeFileSync(filepath, JSON.stringify({ servers: fileserverlist }));
     document.querySelector("#gridLayout").innerHTML = "";
     document.querySelector("#loading").innerHTML = "Loading...";
-    updateServers();
+    updateServerList();
   };
 
   window.editServer = (index) => {
-    let serverJson = JSON.parse(fs.readFileSync(filepath));
     modalTitle.innerHTML = "Edit Server";
-    inputPrettyName.value = serverJson["servers"][index].prettyname;
-    inputIP.value = serverJson["servers"][index].ip;
-    inputPort.value = serverJson["servers"][index].port;
-    inputPasswd.value = serverJson["servers"][index].password;
+    inputPrettyName.value = fileserverlist[index].prettyname;
+    inputIP.value = fileserverlist[index].ip;
+    inputPort.value = fileserverlist[index].port;
+    inputPasswd.value = fileserverlist[index].password;
     addServerModal.style.setProperty("display", "block");
     editingIndex = index;
   };
@@ -227,7 +228,6 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
 
   /* Update the server list */
   function updateServerList() {
-    console.log("Updating server list");
     warnStatus = false;
     fileserverlist = JSON.parse(fs.readFileSync(filepath, "utf8")).servers;
     for (let [index, server] of fileserverlist.entries()) {
@@ -237,7 +237,7 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
 
   /* Do it and do it again */
   updateServerList();
-  setInterval(updateServerList, 2000);
+  setInterval(updateServerList, 2500);
 });
 
 /* Get the version number from the main process and display it */
