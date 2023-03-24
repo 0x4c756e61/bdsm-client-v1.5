@@ -68,7 +68,6 @@ const createWindow = () => {
 };
 
 app.on("ready", createWindow);
-3;
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
@@ -92,7 +91,7 @@ ipcMain.handle("getAppVersion", () => {
   return app.getVersion();
 });
 
-// Reload electron when file is edited in dev mode
-try {
-  require("electron-reloader")(module);
-} catch {}
+// // Reload electron when file is edited in dev mode
+// try {
+//   require("electron-reloader")(module);
+// } catch {}
