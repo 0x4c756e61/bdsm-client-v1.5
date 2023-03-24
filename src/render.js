@@ -216,22 +216,21 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
       <div class="card-cpu-usage">CPU: ----- %</div>
       <div class="card-status">${status}</div>`;
     }
-
-    if (index == fileserverlist.length - 1) {
-      document.querySelector("#loading").innerHTML = "";
-      warningDiv.innerHTML = warnStatus
-        ? "❗ some servers deserve your attention"
-        : "✅ all servers are up and running";
-    }
+    if ()
   }
 
   /* Update the server list */
-  function updateServerList() {
-    warnStatus = false;
-    fileserverlist = JSON.parse(fs.readFileSync(filepath, "utf8")).servers;
-    for (let [index, server] of fileserverlist.entries()) {
+  async function updateServerList() {
+    fileserverlist = await JSON.parse(fs.readFileSync(filepath, "utf8"))
+      .servers;
+    for await (let [index, server] of fileserverlist.entries()) {
       updateServer(index, server);
+      console.log(index);
     }
+    document.querySelector("#loading").innerHTML = "";
+    warningDiv.innerHTML = warnStatus
+      ? "❗ some servers deserve your attention"
+      : "✅ all servers are up and running";
   }
 
   /* Do it and do it again */
