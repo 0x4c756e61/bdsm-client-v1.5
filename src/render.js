@@ -216,7 +216,6 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
       <div class="card-cpu-usage">CPU: ----- %</div>
       <div class="card-status">${status}</div>`;
     }
-    if ()
   }
 
   /* Update the server list */
