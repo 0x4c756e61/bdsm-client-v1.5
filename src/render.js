@@ -228,12 +228,12 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
       .servers;
     for await (let [index, server] of fileserverlist.entries()) {
       await updateServer(index, server);
-      console.log(index);
     }
     document.querySelector("#loading").innerHTML = "";
     warningDiv.innerHTML = warnStatus
       ? "❗ some servers deserve your attention"
       : "✅ all servers are up and running";
+    warnStatus = false;
   }
 
   /* Do it and do it again */
