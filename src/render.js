@@ -106,7 +106,7 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
     if (index == -1) {
       fileserverlist.push(newJson);
     } else {
-      fileserverlist = newJson;
+      fileserverlist[index] = newJson;
     }
 
     fs.writeFileSync(
