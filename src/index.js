@@ -56,7 +56,7 @@ const createWindow = () => {
 
   mainWindow.loadFile(path.join(__dirname, "index.html"));
 
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 
   /* Save window position and size on close */
   mainWindow.on("close", function () {
@@ -89,6 +89,11 @@ ipcMain.handle("getDataPath", () => {
 /* Get app version for the renderer process */
 ipcMain.handle("getAppVersion", () => {
   return app.getVersion();
+});
+
+/* Open dev tools for the renderer process */
+ipcMain.handle("openDevTools", () => {
+  BrowserWindow.getFocusedWindow().webContents.openDevTools();
 });
 
 // // Reload electron when file is edited in dev mode

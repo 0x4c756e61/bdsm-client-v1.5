@@ -45,6 +45,10 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
     addServerModal.style.setProperty("display", "block");
   });
 
+  document.querySelector("#version").addEventListener("contextmenu", () => {
+    electron.ipcRenderer.invoke("openDevTools");
+  });
+
   window.addEventListener("click", (e) => {
     if (e.target == addServerModal) {
       resetModal();
@@ -223,7 +227,7 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
     fileserverlist = await JSON.parse(fs.readFileSync(filepath, "utf8"))
       .servers;
     for await (let [index, server] of fileserverlist.entries()) {
-      updateServer(index, server);
+      await updateServer(index, server);
       console.log(index);
     }
     document.querySelector("#loading").innerHTML = "";
