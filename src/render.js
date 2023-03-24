@@ -47,12 +47,7 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
 
   window.addEventListener("click", (e) => {
     if (e.target == addServerModal) {
-      addServerModal.style.setProperty("display", "none");
-      inputPrettyName.value = "";
-      inputIP.value = "";
-      inputPort.value = "";
-      inputPasswd.value = "";
-      editingIndex = -1;
+      resetModal();
     }
   });
 
@@ -63,8 +58,37 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
     return;
   }
 
+  function resetModal() {
+    inputPrettyName.value = "";
+    inputIP.value = "";
+    inputPort.value = "";
+    inputPasswd.value = "";
+    inputPrettyName.style.setProperty("border", "solid 1px hsl(246, 11%, 22%)");
+    inputIP.style.setProperty("border", "solid 1px hsl(246, 11%, 22%)");
+    inputPasswd.style.setProperty("border", "solid 1px hsl(246, 11%, 22%)");
+    addServerModal.style.setProperty("display", "none");
+    editingIndex = -1;
+  }
+
   function saveServer(index) {
     let serverJson = JSON.parse(fs.readFileSync(filepath));
+    let errorform = false;
+    if (!inputPrettyName.value) {
+      inputPrettyName.style.setProperty("border", "1px solid red");
+      errorform = true;
+    }
+    if (!inputIP.value) {
+      inputIP.style.setProperty("border", "1px solid red");
+      errorform = true;
+    }
+    if (!inputPasswd.value) {
+      inputPasswd.style.setProperty("border", "1px solid red");
+      errorform = true;
+    }
+    if (errorform) {
+      return;
+    }
+
     let newJson = JSON.parse(`{
         "prettyname": "${inputPrettyName.value}",
         "ip": "${inputIP.value}",
@@ -78,15 +102,11 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
     }
 
     fs.writeFileSync(filepath, JSON.stringify(serverJson));
+    resetModal();
   }
 
   saveServerBtn.addEventListener("click", () => {
     saveServer(editingIndex);
-    addServerModal.style.setProperty("display", "none");
-    inputPrettyName.value = "";
-    inputIP.value = "";
-    inputPort.value = "";
-    inputPasswd.value = "";
     editingIndex = -1;
   });
 
