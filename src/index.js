@@ -23,6 +23,8 @@ if (require("electron-squirrel-startup")) {
   app.quit();
 }
 
+require("update-electron-app")();
+
 /* Create window */
 const createWindow = () => {
   var initPath = path.join(app.getPath("userData"), "window.json");

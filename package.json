@@ -11,6 +11,10 @@
     "publish": "electron-forge publish",
     "lint": "echo \"No linting configured\""
   },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/firminsurgithub/bdsm-client"
+  },
   "keywords": [],
   "author": {
     "name": "Firmin B",
@@ -21,7 +25,8 @@
     "axios": "^1.3.4",
     "dotenv": "^16.0.3",
     "electron-squirrel-startup": "^1.0.0",
-    "electron-store": "^8.1.0"
+    "electron-store": "^8.1.0",
+    "update-electron-app": "^2.0.1"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.3",
