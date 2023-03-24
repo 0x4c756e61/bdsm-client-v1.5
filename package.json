@@ -18,12 +18,10 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@electron-forge/maker-wix": "^6.0.5",
     "axios": "^1.3.4",
     "dotenv": "^16.0.3",
     "electron-squirrel-startup": "^1.0.0",
-    "electron-store": "^8.1.0",
-    "ws": "^8.11.0"
+    "electron-store": "^8.1.0"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.3",

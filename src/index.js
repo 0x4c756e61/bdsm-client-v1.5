@@ -56,7 +56,7 @@ const createWindow = () => {
 
   mainWindow.loadFile(path.join(__dirname, "index.html"));
 
-  // mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 
   /* Save window position and size on close */
   mainWindow.on("close", function () {
@@ -93,6 +93,6 @@ ipcMain.handle("getAppVersion", () => {
 });
 
 // Reload electron when file is edited in dev mode
-// try {
-//   require("electron-reloader")(module);
-// } catch {}
+try {
+  require("electron-reloader")(module);
+} catch {}
