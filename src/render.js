@@ -76,14 +76,23 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
     if (!inputPrettyName.value) {
       inputPrettyName.style.setProperty("border", "1px solid red");
       errorform = true;
+    } else {
+      inputPrettyName.style.setProperty(
+        "border",
+        "solid 1px hsl(246, 11%, 22%)"
+      );
     }
     if (!inputIP.value) {
       inputIP.style.setProperty("border", "1px solid red");
       errorform = true;
+    } else {
+      inputIP.style.setProperty("border", "solid 1px hsl(246, 11%, 22%)");
     }
     if (!inputPasswd.value) {
       inputPasswd.style.setProperty("border", "1px solid red");
       errorform = true;
+    } else {
+      inputPasswd.style.setProperty("border", "solid 1px hsl(246, 11%, 22%)");
     }
     if (errorform) {
       return;
