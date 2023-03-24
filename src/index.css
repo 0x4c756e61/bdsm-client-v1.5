@@ -30,9 +30,8 @@ body {
   -webkit-app-region: drag;
   height: 30px;
   width: 100%;
-  /* background-color: #0072db; */
   color: white;
-  padding-left: 10px;
+  padding-left: 20px;
   padding-top: 10px;
   box-sizing: border-box;
 }

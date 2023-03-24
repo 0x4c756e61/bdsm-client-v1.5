@@ -1,6 +1,11 @@
 # Basic Data Server Monitor (Client)
 
-Under development
+This app is in development, so it's not ready for production use.
+
+## Getting Started
+
+To use it, you need to install the [server](http://github.com/firminsurgithub/bdsm-server) first.
+One you have installed the server, you can install the client [here](http://github.com/firminsurgithub/bdsm-client/releases).
 
 ## To Do
 

@@ -19,6 +19,10 @@ const { app, BrowserWindow, ipcMain } = require("electron"),
   fs = require("node:fs"),
   path = require("node:path");
 
+if (require("electron-squirrel-startup")) {
+  app.quit();
+}
+
 /* Create window */
 const createWindow = () => {
   var initPath = path.join(app.getPath("userData"), "window.json");
@@ -32,6 +36,8 @@ const createWindow = () => {
     y: data && data.bounds.y ? data.bounds.y : 20,
     minWidth: 800,
     minHeight: 400,
+    backgroundColor: "#13111c",
+    icon: path.join(__dirname, "assets/icon.ico"),
     width: data && data.bounds.width ? data.bounds.width : 800,
     height: data && data.bounds.height ? data.bounds.height : 600,
     webPreferences: {
@@ -50,7 +56,7 @@ const createWindow = () => {
 
   mainWindow.loadFile(path.join(__dirname, "index.html"));
 
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 
   /* Save window position and size on close */
   mainWindow.on("close", function () {

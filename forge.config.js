@@ -16,13 +16,15 @@ Copyright 2023 Firmin B.
 require("dotenv").config();
 
 module.exports = {
-  packagerConfig: {},
+  packagerConfig: {
+    icon: "./src/assets/icon.ico",
+  },
   rebuildConfig: {},
   makers: [
-    {
-      name: "@electron-forge/maker-zip",
-      platforms: ["darwin"],
-    },
+    // {
+    //   name: "@electron-forge/maker-zip",
+    //   platforms: ["darwin", "linux", "win32"],
+    // },
     {
       name: "@electron-forge/maker-deb",
       config: {
@@ -36,27 +38,12 @@ module.exports = {
       config: {},
     },
     {
-      name: "@electron-forge/maker-wix",
+      name: "@electron-forge/maker-squirrel",
       config: {
-        language: 1033,
-        manufacturer: "Firmin_",
-        description: "Server monitoring tool",
-        icon: "src/assets/icon.ico",
-        name: "BDSM Client",
-        appUserModelId: "com.firmin.bdsm.client",
-      },
-    },
-  ],
-  publishers: [
-    {
-      name: "@electron-forge/publisher-github",
-      config: {
-        repository: {
-          owner: "firminsurgithub",
-          name: "bdsm-client",
-        },
-        prerelease: true,
-        authToken: process.env.GITHUB_TOKEN,
+        setupIcon: "./src/assets/icon.ico",
+        loadingGif: "./src/assets/install.gif",
+        iconUrl:
+          "https://raw.githubusercontent.com/firminsurgithub/bdsm-client/master/src/assets/icon.ico",
       },
     },
   ],
