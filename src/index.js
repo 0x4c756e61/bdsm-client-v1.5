@@ -19,10 +19,9 @@ const { app, BrowserWindow, ipcMain } = require("electron"),
   fs = require("node:fs"),
   path = require("node:path");
 
-if (require("electron-squirrel-startup")) {
-  app.quit();
-}
+if (require("electron-squirrel-startup")) app.quit();
 
+/* Update electron app */
 require("update-electron-app")();
 
 /* Create window */
@@ -58,7 +57,7 @@ const createWindow = () => {
 
   mainWindow.loadFile(path.join(__dirname, "index.html"));
 
-  // mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 
   /* Save window position and size on close */
   mainWindow.on("close", function () {
@@ -84,19 +83,15 @@ app.on("activate", () => {
 });
 
 /* Get data path for the renderer process */
-ipcMain.handle("getDataPath", () => {
-  return app.getPath("userData");
-});
+ipcMain.handle("getDataPath", () => app.getPath("userData"));
 
 /* Get app version for the renderer process */
-ipcMain.handle("getAppVersion", () => {
-  return app.getVersion();
-});
+ipcMain.handle("getAppVersion", () => app.getVersion());
 
 /* Open dev tools for the renderer process */
-ipcMain.handle("openDevTools", () => {
-  BrowserWindow.getFocusedWindow().webContents.openDevTools();
-});
+ipcMain.handle("openDevTools", () =>
+  BrowserWindow.getFocusedWindow().webContents.openDevTools()
+);
 
 // // Reload electron when file is edited in dev mode
 // try {
