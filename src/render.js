@@ -249,7 +249,6 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
       document.querySelector(
         `#card-cpu-usage-${index}`
       ).innerHTML = `CPU: ${data.cpuUsage.toFixed(2)}%`;
-      console.log(data);
       document.querySelector(`#card-status-${index}`).innerHTML = `🟢`;
 
       if (viewingIndex == index) {
