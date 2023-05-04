@@ -163,7 +163,7 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
     fileserverlist.splice(index, 1);
     fs.writeFileSync(filepath, JSON.stringify({ servers: fileserverlist }));
     document.querySelector("#gridLayout").innerHTML = "";
-    document.querySelector("#loading").innerHTML = "Loading...";
+    document.querySelector("#warning").innerHTML = "🔄️ loading...";
     updateServerList();
   };
 
@@ -255,6 +255,7 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
         updateViewServer(data, server, false);
       }
     } catch (error) {
+      console.log(error);
       warnStatus = true;
       let status = "🔴";
       let outlineColor = "#ff4943";
@@ -297,10 +298,9 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
   async function updateServerList() {
     fileserverlist = await JSON.parse(fs.readFileSync(filepath, "utf8"))
       .servers;
-    for await (let [index, server] of fileserverlist.entries()) {
-      await updateServer(index, server);
+    for (let [index, server] of fileserverlist.entries()) {
+      updateServer(index, server);
     }
-    document.querySelector("#loading").innerHTML = "";
     warningDiv.innerHTML = warnStatus
       ? "❗ some servers deserve your attention"
       : "✅ all servers are up and running";
