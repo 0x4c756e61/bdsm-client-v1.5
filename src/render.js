@@ -24,6 +24,7 @@ const path = require("node:path"),
 let fileserverlist;
 let warnStatus = false;
 let editingIndex = -1;
+let viewingIndex = -1;
 
 /* Main Function */
 electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
@@ -31,6 +32,7 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
   const addServerBtn = document.querySelector("#add-server"),
     warningDiv = document.querySelector("#warning"),
     addServerModal = document.querySelector("#modal"),
+    viewServerModal = document.querySelector("#server-info"),
     saveServerBtn = document.querySelector("#modal-content-addbtn");
 
   /* Modal input fields and related elements */
@@ -40,9 +42,23 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
     inputPasswd = document.querySelector("#modal-content-passwd"),
     modalTitle = document.querySelector("#modal-content-title");
 
+  /* View modal elements */
+  const viewPrettyName = document.querySelector("#view-server-name"),
+    viewCpu = document.querySelector("#view-server-cpu"),
+    viewRam = document.querySelector("#view-server-ram"),
+    viewUptime = document.querySelector("#view-server-uptime"),
+    viewArch = document.querySelector("#view-server-arch"),
+    viewCpuModel = document.querySelector("#view-cpu-model"),
+    viewServerIP = document.querySelector("#view-server-ip"),
+    viewOS = document.querySelector("#view-server-os");
+
   addServerBtn.addEventListener("click", () => {
     modalTitle.innerHTML = "New Server";
     addServerModal.style.setProperty("display", "block");
+  });
+
+  document.querySelector("#close-view").addEventListener("click", () => {
+    resetViewModal();
   });
 
   document.querySelector("#version").addEventListener("contextmenu", () => {
@@ -50,8 +66,9 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
   });
 
   window.addEventListener("click", (e) => {
-    if (e.target == addServerModal) {
+    if (e.target == addServerModal || e.target == viewServerModal) {
       resetModal();
+      resetViewModal();
     }
   });
 
@@ -72,6 +89,19 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
     inputPasswd.style.setProperty("border", "solid 1px hsl(246, 11%, 22%)");
     addServerModal.style.setProperty("display", "none");
     editingIndex = -1;
+  }
+  function resetViewModal() {
+    viewServerModal.style.setProperty("display", "none");
+    viewPrettyName.innerHTML = "-----";
+    viewPrettyName.innerHTML = "---";
+    viewCpu.innerHTML = "---";
+    viewRam.innerHTML = "---";
+    viewUptime.innerHTML = "---";
+    viewArch.innerHTML = "---";
+    viewOS.innerHTML = "---";
+    viewCpuModel.innerHTML = "---";
+    viewServerIP.innerHTML = "---";
+    viewingIndex = -1;
   }
 
   function saveServer(index) {
@@ -147,6 +177,30 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
     editingIndex = index;
   };
 
+  window.viewServer = (index) => {
+    viewingIndex = index;
+    viewServerModal.style.setProperty("display", "block");
+  };
+
+  async function updateViewServer(data, server, error) {
+    viewPrettyName.innerHTML = `${server.prettyname.toUpperCase()} <span>(${
+      error ? "---" : data.serverId
+    })</span>`;
+    viewCpu.innerHTML = error ? "---" : `${data.cpuUsage.toFixed(2)}%`;
+    viewRam.innerHTML = error ? "---" : `${data.ramUsage}`;
+    viewUptime.innerHTML = error
+      ? "---"
+      : `${Math.floor(data.serverUptime / 3600)}H ${Math.floor(
+          (data.serverUptime % 3600) / 60
+        )}M`;
+    viewArch.innerHTML = error ? "---" : data.cpuArch;
+    viewOS.innerHTML = error ? "---" : data.osVersion;
+    viewCpuModel.innerHTML = error
+      ? "---"
+      : `${data.cpuList[0].model} (${data.cpuList.length} cores)`;
+    viewServerIP.innerHTML = `${server.ip}`;
+  }
+
   /* At each data change, update the selected server in the list */
   async function updateServer(index, server) {
     /* Try/Catch to detect if server is not responding */
@@ -175,6 +229,9 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
     </div><div onclick="window.deleteServer(${index});" class="card-btn card-delete">
       <svg aria-hidden="true" role="img" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M15 3.999V2H9V3.999H3V5.999H21V3.999H15Z"></path><path fill="currentColor" d="M5 6.99902V18.999C5 20.101 5.897 20.999 7 20.999H17C18.103 20.999 19 20.101 19 18.999V6.99902H5ZM11 17H9V11H11V17ZM15 17H13V11H15V17Z"></path></svg>
     </div>
+    <div onclick="window.viewServer(${index})" class="card-btn card-view">
+      <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 576 512"><!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z"/></svg>
+    </div>
       <div class="card-title">${server.prettyname.toLowerCase()} <span id="card-id">(${
         data.serverId
       })</span></div>
@@ -182,6 +239,10 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
       <div class="card-usage">RAM: ${data.ramUsage} (${data.ramPercent})</div>
       <div class="card-cpu-usage">CPU: ${data.cpuUsage.toFixed(2)} %</div>
       <div class="card-status">🟢</div>`;
+
+      if (viewingIndex == index) {
+        updateViewServer(data, server, false);
+      }
     } catch (error) {
       let div = document.querySelector(`#server-${index}`);
       if (!div) {
@@ -214,11 +275,17 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
     </div><div onclick="window.deleteServer(${index});" class="card-btn card-delete">
       <svg aria-hidden="true" role="img" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M15 3.999V2H9V3.999H3V5.999H21V3.999H15Z"></path><path fill="currentColor" d="M5 6.99902V18.999C5 20.101 5.897 20.999 7 20.999H17C18.103 20.999 19 20.101 19 18.999V6.99902H5ZM11 17H9V11H11V17ZM15 17H13V11H15V17Z"></path></svg>
     </div>
+    <div onclick="window.viewServer(${index})" class="card-btn card-view">
+      <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 576 512"><!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z"/></svg>
+    </div>
       <div class="card-title">${server.prettyname.toLowerCase()} <span id="card-id">(-----)</span></div>
       <div class="card-platform">Running: -----</div>
       <div class="card-usage">RAM: ----- (----- %)</div>
       <div class="card-cpu-usage">CPU: ----- %</div>
       <div class="card-status">${status}</div>`;
+      if (viewingIndex == index) {
+        updateViewServer(null, server, true);
+      }
     }
   }
 

@@ -52,9 +52,55 @@ limitations under the License.
 
         </div>
       </div>
+      <div id="server-info">
+        <div id="server-info-content">
+          <button id="close-view" class="big-button">Close</button>
+          <h3>Curently Viewing</h3>
+          <h1 id="view-server-name">---</h1>
+          <h3>Ressources :</h3>
+          <div id="view-server-ressources">
+            <h2 class="ressource">
+              <span class="ressource-name">CPU</span>
+              <span id="view-server-cpu" class="ressource-value">---</span>
+            </h2>
+            <h2 class="ressource">
+              <span class="ressource-name">RAM</span>
+              <span id="view-server-ram" class="ressource-value">---</span>
+            </h2>
+          </div>
+          <h3>System :</h3>
+          <div id="view-server-system">
+            <h2 class="ressource">
+              <span class="ressource-name">OS</span>
+              <span id="view-server-os" class="ressource-value">---</span>
+            </h2>
+            <h2 class="ressource">
+              <span class="ressource-name">ARCH</span>
+              <span id="view-server-arch" class="ressource-value">---</span>
+            </h2>
+            <h2 class="ressource">
+              <span class="ressource-name">UPTIME</span>
+              <span id="view-server-uptime" class="ressource-value">---</span>
+            </h2>
+          </div>
+          <div id="view-server-system">
+            <h2 class="ressource" style="width: auto;">
+              <span class="ressource-name">CPU Model</span>
+              <span id="view-cpu-model" class="ressource-value">---</span>
+            </h2>
+          </div>
+          <div id="view-server-system">
+            <h2 class="ressource" style="width: auto;">
+              <span class="ressource-name">IP address</span>
+              <span id="view-server-ip" class="ressource-value">---</span>
+            </h2>
+          </div>
+        </div>
+      </div>
       <div id="footer">
         <span id="loading">Loading...<br></span>
         <span id="version">...</span>
+        <!-- <button class="big-button" onclick="window.location.reload();">Hot reload</button> -->
       </div>
     </div>
   </div>
