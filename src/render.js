@@ -234,7 +234,7 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
       });
 
       const data = JSON.parse(response.data);
-      div.style.setProperty("--outline-color", "#2eff8c");
+      div ? div.style.setProperty("--outline-color", "#2eff8c") : null;
       document.querySelector(
         `#card-title-${index}`
       ).innerHTML = `${server.prettyname.toLowerCase()} <span id="card-id">(${
@@ -255,7 +255,6 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
         updateViewServer(data, server, false);
       }
     } catch (error) {
-      console.log(error);
       warnStatus = true;
       let status = "🔴";
       let outlineColor = "#ff4943";
@@ -275,7 +274,7 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
             break;
         }
       }
-      div.style.setProperty("--outline-color", outlineColor);
+      div ? div.style.setProperty("--outline-color", outlineColor) : null;
       document.querySelector(
         `#card-title-${index}`
       ).innerHTML = `${server.prettyname.toLowerCase()} <span id="card-id">(---)</span>`;
@@ -298,8 +297,8 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
   async function updateServerList() {
     fileserverlist = await JSON.parse(fs.readFileSync(filepath, "utf8"))
       .servers;
-    for (let [index, server] of fileserverlist.entries()) {
-      updateServer(index, server);
+    for await (let [index, server] of fileserverlist.entries()) {
+      await updateServer(index, server);
     }
     warningDiv.innerHTML = warnStatus
       ? "❗ some servers deserve your attention"
