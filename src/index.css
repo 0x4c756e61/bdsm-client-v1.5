@@ -71,6 +71,10 @@ body {
   margin: 10px 5px;
   height: 32px;
 }
+.top-btn svg {
+  height: 100%;
+  width: 100%;
+}
 
 #logo {
   margin: none;
