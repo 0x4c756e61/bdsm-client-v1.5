@@ -221,6 +221,7 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
       <div class="card-usage" id="card-usage-${index}">RAM: ---</div>
       <div cladd="card-cpu-usage" id="card-cpu-usage-${index}">CPU: ---%</div>
       <div class="card-status" id="card-status-${index}">❓</div></div>`;
+      div = document.querySelector(`#server-${index}`);
     }
     /* Try/Catch to detect if server is not responding */
     try {
@@ -234,7 +235,7 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
       });
 
       const data = JSON.parse(response.data);
-      div ? div.style.setProperty("--outline-color", "#2eff8c") : null;
+      div.style.setProperty("--outline-color", "#2eff8c");
       document.querySelector(
         `#card-title-${index}`
       ).innerHTML = `${server.prettyname.toLowerCase()} <span id="card-id">(${
@@ -274,7 +275,7 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
             break;
         }
       }
-      div ? div.style.setProperty("--outline-color", outlineColor) : null;
+      div.style.setProperty("--outline-color", outlineColor);
       document.querySelector(
         `#card-title-${index}`
       ).innerHTML = `${server.prettyname.toLowerCase()} <span id="card-id">(---)</span>`;

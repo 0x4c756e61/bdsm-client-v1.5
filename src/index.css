@@ -66,8 +66,10 @@ body {
 .big-button:hover {
   background-color: #211f2d;
 }
-#add-server {
+.top-btn {
   float: right;
+  margin: 10px 5px;
+  height: 32px;
 }
 
 #logo {
@@ -98,10 +100,9 @@ body {
   outline: 2px solid var(--outline-color);
   transition: 0.3s ease-in-out;
   transition-property: outline-offset;
-  cursor: pointer;
 }
 .card:hover {
-  outline-offset: 5px;
+  outline-offset: 3px;
 }
 
 .card-title {
