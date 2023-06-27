@@ -13,7 +13,9 @@ Copyright 2023 Firmin B.
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600 &display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap");
+
 * {
   margin: 0;
   padding: 0;
@@ -21,6 +23,8 @@ Copyright 2023 Firmin B.
     Arial, sans-serif;
   user-select: none;
 }
+
+/* General Styles */
 body {
   overflow: hidden;
   background-color: #13111c;
@@ -42,6 +46,7 @@ body {
   padding: 2rem;
   height: min-content;
 }
+
 #main-scroll {
   overflow: auto;
   height: calc(100vh - 30px);
@@ -52,6 +57,7 @@ body {
   clear: both;
 }
 
+/* Buttons */
 .big-button {
   padding: 5px 10px;
   border: none;
@@ -63,21 +69,25 @@ body {
   transition: 0.3s ease;
   outline: solid 1px hsl(246, 11%, 22%);
 }
+
 .big-button:hover {
   background-color: #211f2d;
 }
+
 .top-btn {
   float: right;
   margin: 10px 5px;
   height: 32px;
 }
+
 .top-btn svg {
   height: 100%;
   width: 100%;
 }
 
+/* Logo and Grid Layout */
 #logo {
-  margin: none;
+  margin: 0;
   border-radius: 100%;
   height: 35px;
 }
@@ -91,6 +101,7 @@ body {
   gap: 30px;
 }
 
+/* Cards */
 .card {
   position: relative;
   width: 100%;
@@ -105,6 +116,7 @@ body {
   transition: 0.3s ease-in-out;
   transition-property: outline-offset;
 }
+
 .card:hover {
   outline-offset: 3px;
 }
@@ -184,20 +196,25 @@ body {
   color: #aaaaaac2;
 }
 
+/* Table */
 tr td {
   padding: 5px 15px;
 }
+
 tr:first-child {
   background-color: #aaaaaa;
   border-spacing: 0;
 }
+
 tr:nth-child(n + 2):not(:last-child) {
   border-bottom: solid #b6b6b6 0.5px;
 }
+
 tr:nth-child(n + 2):hover {
   background-color: #aaaaaa55;
 }
 
+/* Footer */
 #footer {
   margin: 25px auto;
   box-sizing: border-box;
@@ -211,8 +228,10 @@ tr:nth-child(n + 2):hover {
   font-variant: small-caps;
 }
 
+/* Modals and Settings */
 #modal,
-#server-info {
+#server-info,
+#soft-settings {
   display: none;
   position: fixed;
   z-index: 1;
@@ -223,7 +242,8 @@ tr:nth-child(n + 2):hover {
   height: 100%;
 }
 
-#modal-content {
+#modal-content,
+#soft-settings-modal {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -238,8 +258,38 @@ tr:nth-child(n + 2):hover {
   min-width: 420px;
   outline: solid 1px hsl(246, 11%, 22%);
   padding: 20px;
+  padding-bottom: 10px;
   width: 25vw;
 }
+
+#soft-settings-modal .switch {
+  display: flex;
+  flex-wrap: nowrap;
+  text-align: center;
+  align-items: center;
+  justify-content: space-around;
+  height: 36px !important;
+}
+
+#soft-settings-modal .switch-btn {
+  width: 50%;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.2s ease-in-out;
+}
+
+#soft-settings-modal .switch .active {
+  background-color: #3d3d3d;
+  margin: 0px 2px;
+  padding: 5px 3px;
+}
+
+#soft-settings-modal .switch-btn:hover:not(.active) {
+  padding: 2px 0px;
+  margin: 0px 8px;
+  background-color: #727272;
+}
+
 #server-info-content {
   position: absolute;
   width: 80vw;
@@ -255,56 +305,75 @@ tr:nth-child(n + 2):hover {
   color: white;
   outline: solid 1px hsl(246, 11%, 22%);
 }
+
 #server-info-content h3 {
   margin-top: 7px;
 }
+
 #server-info-content h1 {
   font-family: "Inter", sans-serif;
 }
+
 #server-info-content h1 span {
   font-size: 0.7em;
   color: #aaaaaac2;
 }
+
 #server-info-content #close-view {
   position: absolute;
   top: 10px;
   right: 10px;
 }
-#server-info-content #view-server-ressources {
+
+#server-info-content .view-server-ressources {
   display: flex;
   flex-direction: row;
   width: 100%;
   justify-content: space-between;
 }
-#server-info-content #view-server-ressources h2 {
+
+#server-info-content .view-server-ressources h2 {
   width: calc(100% / 3);
   text-align: left;
   margin-right: 7px;
 }
+
+#soft-settings-modal #close-setting-view {
+  float: right;
+  position: relative;
+}
+
 .ressource .ressource-name {
   color: #aaa;
   font-size: 0.75em;
 }
-#server-info-content #view-server-system {
+
+#server-info-content .view-server-system {
   display: flex;
   flex-direction: row;
   width: 100%;
   justify-content: space-between;
 }
-#server-info-content #view-server-system h2 {
+
+#server-info-content .view-server-system h2 {
   width: calc(100% / 3);
   text-align: left;
   margin-right: 7px;
 }
 
-#modal-content span {
+#modal-content span,
+#soft-settings-modal span {
   color: white;
   font-family: "Inter", sans-serif;
-  margin-bottom: 5px;
+  margin-top: 4px;
+  margin-bottom: 1px;
 }
 
 #modal-content input[type="text"],
-#modal-content input[type="password"] {
+#modal-content input[type="password"],
+#soft-settings-modal input[type="text"],
+#soft-settings-modal input[type="number"],
+#soft-settings-modal .switch {
   color: white;
   background-color: rgb(0, 0, 0, 0);
   border: none;
@@ -315,7 +384,8 @@ tr:nth-child(n + 2):hover {
   outline: solid 1px hsl(246, 11%, 22%);
 }
 
-#modal-content input[type="button"] {
+#modal-content input[type="button"],
+#soft-settings-modal input[type="button"] {
   color: white;
   margin-top: 15px;
   background-color: rgb(0, 0, 0, 0);
@@ -328,13 +398,50 @@ tr:nth-child(n + 2):hover {
   cursor: pointer;
 }
 
-#modal-content input:hover {
-  /* outline: solid 1px hsl(246, 11%, 29%); */
+#soft-settings-modal-footer {
+  text-align: center;
+  color: #727272 !important;
+}
+
+#modal-content input:hover,
+#soft-settings-modal input:hover {
   background-color: rgb(255, 255, 255, 0.05);
 }
 
-#modal-content-title {
-  font-size: 1.2em;
-  font-weight: 600;
-  margin-bottom: 10px;
+#modal-content input:disabled,
+#soft-settings-modal input:disabled {
+  background-color: rgba(255, 255, 255, 0.05);
+  cursor: not-allowed;
+}
+
+#modal-content input[type="checkbox"],
+#soft-settings-modal input[type="checkbox"] {
+  cursor: pointer;
+}
+
+#modal-content label,
+#soft-settings-modal label {
+  font-family: "Inter", sans-serif;
+  margin-top: 5px;
+  font-size: 0.9em;
+  color: white;
+}
+
+/* Responsiveness */
+@media screen and (max-width: 768px) {
+  #gridLayout {
+    display: block;
+  }
+
+  .card {
+    margin-bottom: 20px;
+  }
+
+  .card-btn {
+    top: -5px;
+  }
+
+  .card-status {
+    top: -15px;
+  }
 }

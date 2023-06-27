@@ -10,10 +10,9 @@ One you have installed the server, you can install the client [here](http://gith
 
 ## To Do
 
-- [ ] Add "More details about the server status" window
-- [ ] Add "Settings" button and window
 - [ ] Add "About" button and window (maybe in the Settings window ?)
-- [ ] Add "Export config" button(maybe in the Settings window ?)
+- [ ] Add "Export config" button (maybe in the Settings window ?)
+- [ ] Add service monitoring
 
 ## License
 

@@ -17,7 +17,12 @@ Copyright 2023 Firmin B.
 /* Dependencies */
 const { app, BrowserWindow, ipcMain } = require("electron"),
   fs = require("node:fs"),
-  path = require("node:path");
+  path = require("node:path"),
+  discordRPC = require("discord-rpc");
+
+let userSettings
+const clientId = "1122502251253076080";
+let rpcClient;
 
 if (require("electron-squirrel-startup")) app.quit();
 
@@ -26,17 +31,17 @@ require("update-electron-app")();
 
 /* Create window */
 const createWindow = () => {
-  var initPath = path.join(app.getPath("userData"), "window.json");
-  var data;
+  const initPath = path.join(app.getPath("userData"), "window.json");
+  let data;
   try {
     data = require(initPath);
-  } catch (e) {}
+  } catch (e) { }
 
   const mainWindow = new BrowserWindow({
     x: data && data.bounds.x ? data.bounds.x : 20,
     y: data && data.bounds.y ? data.bounds.y : 20,
     minWidth: 800,
-    minHeight: 400,
+    minHeight: 500,
     backgroundColor: "#13111c",
     icon: path.join(__dirname, "assets/icon.ico"),
     width: data && data.bounds.width ? data.bounds.width : 800,
@@ -93,7 +98,37 @@ ipcMain.handle("openDevTools", () =>
   BrowserWindow.getFocusedWindow().webContents.openDevTools()
 );
 
-// // Reload electron when file is edited in dev mode
-// try {
-//   require("electron-reloader")(module);
-// } catch {}
+if (fs.existsSync(path.join(app.getPath("userData"), "servers.json"))) {
+  userSettings = require(path.join(app.getPath("userData"), "servers.json")).settings;
+
+  if (userSettings.discordRichPresence) {
+    let date = new Date();
+    rpcClient = new discordRPC.Client({ transport: "ipc" });
+    console.log("Discord RPC client created");
+    rpcClient.on("ready", () => {
+      console.log("Discord RPC client ready");
+      rpcClient.setActivity({
+        state: "Monitoring servers...",
+        startTimestamp: date,
+        largeImageKey: "https://i.imgur.com/uvfVu0P.png",
+        largeImageText: app.getVersion(),
+        instance: false,
+        buttons: [{ label: 'Github', url: 'https://github.com/firminsurgithub/bdsm-client' }]
+      });
+    });
+    rpcClient.login({ clientId }).catch(console.error);
+    ipcMain.on("update-rpc", (event, arg) => {
+      if (userSettings.discordRichPresence) {
+        rpcClient.setActivity({
+          state: arg.state,
+          details: arg.details,
+          startTimestamp: date,
+          largeImageKey: "https://i.imgur.com/uvfVu0P.png",
+          largeImageText: app.getVersion(),
+          instance: false,
+          buttons: [{ label: 'Github', url: 'https://github.com/firminsurgithub/bdsm-client' }]
+        });
+      }
+    });
+  }
+}
