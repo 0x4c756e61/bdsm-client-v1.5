@@ -1,7 +1,7 @@
 {
   "name": "bdsm-client",
   "productName": "BDSM Client",
-  "version": "1.0.0-dev",
+  "version": "1.0.0-rc",
   "description": "Server monitoring system (client)",
   "main": "src/index.js",
   "scripts": {

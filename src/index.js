@@ -62,7 +62,8 @@ const createWindow = () => {
 
   mainWindow.loadFile(path.join(__dirname, "index.html"));
 
-  mainWindow.webContents.openDevTools();
+  if (!app.isPackaged)
+    mainWindow.webContents.openDevTools();
 
   /* Save window position and size on close */
   mainWindow.on("close", function () {
@@ -91,7 +92,8 @@ app.on("activate", () => {
 ipcMain.handle("getDataPath", () => app.getPath("userData"));
 
 /* Get app version for the renderer process */
-ipcMain.handle("getAppVersion", () => app.getVersion());
+ipcMain.handle("getAppVersion", () => `${app.getVersion()}${app.isPackaged ? "" : " (Dev mode)"}`);
+
 
 /* Open dev tools for the renderer process */
 ipcMain.handle("openDevTools", () =>
@@ -111,7 +113,7 @@ if (fs.existsSync(path.join(app.getPath("userData"), "servers.json"))) {
         state: "Monitoring servers...",
         startTimestamp: date,
         largeImageKey: "https://i.imgur.com/uvfVu0P.png",
-        largeImageText: app.getVersion(),
+        largeImageText: `${app.getVersion()}${app.isPackaged ? "" : " (Dev mode)"}`,
         instance: false,
         buttons: [{ label: 'Github', url: 'https://github.com/firminsurgithub/bdsm-client' }]
       });
@@ -124,7 +126,7 @@ if (fs.existsSync(path.join(app.getPath("userData"), "servers.json"))) {
           details: arg.details,
           startTimestamp: date,
           largeImageKey: "https://i.imgur.com/uvfVu0P.png",
-          largeImageText: app.getVersion(),
+          largeImageText: `${app.getVersion()}${app.isPackaged ? "" : " (Dev mode)"}`,
           instance: false,
           buttons: [{ label: 'Github', url: 'https://github.com/firminsurgithub/bdsm-client' }]
         });

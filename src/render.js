@@ -57,7 +57,8 @@ const viewPrettyName = document.querySelector("#view-server-name"),
     viewOS = document.querySelector("#view-server-os");
 
 /* Main Function */
-electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
+(async () => {
+    const dataPath = await electron.ipcRenderer.invoke("getDataPath");
     const srvfilepath = path.join(dataPath, "servers.json");
 
     addServerBtn.addEventListener("click", () => {
@@ -180,8 +181,6 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
             discordRichPresence: discordRichPresence,
             crashReports: crashReports
         }
-        clearInterval(updateInterval);
-        updateInterval = setInterval(updateServerList, settingsList.refresh);
         fs.writeFileSync(srvfilepath, JSON.stringify({ servers: fileserverlist, settings: settingsList }));
     }
     saveSettingsBtn.addEventListener("click", () => {
@@ -273,8 +272,8 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
         updateServer(index, await JSON.parse(fs.readFileSync(srvfilepath, "utf8")).servers[index]);
     };
 
-    async function updateViewServer(data, server, error) {
-        viewPrettyName.innerHTML = `${server.prettyname.toUpperCase()} <span>(${error ? "---" : data.serverId
+    async function updateViewServer(data, server, error, status) {
+        viewPrettyName.innerHTML = `${status} ${server.prettyname.toUpperCase()} <span>(${error ? "---" : data.serverId
             })</span>`;
         viewCpu.innerHTML = error ? "---" : `${data.cpuUsage.toFixed(2)}%`;
         viewRam.innerHTML = error ? "---" : `${data.ramUsage}`;
@@ -355,17 +354,15 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
             document.querySelector("#gridLayout").appendChild(cardDiv);
             div = document.querySelector(`#server-${index}`);
         }
-        /* Try/Catch to detect if server is not responding */
-        try {
-            const response = await axios({
-                method: "post",
-                url: `http://${server.ip}:${server.port}/update`,
-                responseType: "stream",
-                headers: {
-                    auth: server.password,
-                },
-            });
-
+        await axios({
+            method: "post",
+            url: `http://${server.ip}:${server.port}/update`,
+            responseType: "stream",
+            headers: {
+                auth: server.password,
+            },
+            timeout: settingsList.refresh - 50,
+        }).then((response) => {
             const data = JSON.parse(response.data);
             div.style.setProperty("--outline-color", "#2eff8c");
             document.querySelector(
@@ -384,9 +381,9 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
             document.querySelector(`#card-status-${index}`).innerHTML = `🟢`;
 
             if (viewingIndex == index) {
-                updateViewServer(data, server, false);
+                updateViewServer(data, server, false, "🟢");
             }
-        } catch (error) {
+        }).catch((error) => {
             warnStatus = true;
             let status = "🔴";
             let outlineColor = "#ff4943";
@@ -419,9 +416,9 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
                 `#card-cpu-usage-${index}`
             ).innerHTML = `CPU: ---%`;
             if (viewingIndex === index) {
-                await updateViewServer(null, server, true);
+                updateViewServer(null, server, true, status);
             }
-        }
+        });
     }
 
     /* Update the server list */
@@ -437,11 +434,10 @@ electron.ipcRenderer.invoke("getDataPath").then(async (dataPath) => {
             electron.ipcRenderer.send('update-rpc', { details: `Monitoring servers...`, state: warnStatus ? "Some servers are down ❗" : "All is fine 👌" });
         }
         warnStatus = false;
+        setTimeout(updateServerList, settingsList.refresh);
     }
-    /* Do it and do it again */
     updateServerList();
-    updateInterval = setInterval(updateServerList, settingsList.refresh);
-});
+})()
 
 /* Get the version number from the main process and display it */
 electron.ipcRenderer.invoke("getAppVersion").then(async (versionNumber) => {

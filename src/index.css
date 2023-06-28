@@ -57,6 +57,58 @@ body {
   clear: both;
 }
 
+/* Splash screen */
+#splash {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #13111c;
+  z-index: 100;
+  animation: splash-bg-out 800ms ease-in-out;
+  animation-delay: 3s;
+  animation-fill-mode: forwards;
+  overflow: hidden;
+}
+
+#splash svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 150px;
+  width: 150px;
+  animation: splash-logo-out 2s ease-in-out;
+  animation-delay: 600ms;
+}
+
+@keyframes splash-bg-out {
+  0% {
+    opacity: 1;
+  }
+  99% {
+    width: 100%;
+    height: 100%;
+  }
+  100% {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+}
+@keyframes splash-logo-out {
+  0% {
+    filter: drop-shadow(0px 0px 0px #fff);
+  }
+  50% {
+    filter: drop-shadow(0px 0px 10px #fff);
+  }
+  100% {
+    filter: drop-shadow(0px 0px 0px #fff);
+  }
+}
+
 /* Buttons */
 .big-button {
   padding: 5px 10px;
