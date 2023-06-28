@@ -1,7 +1,7 @@
 <img src="src/assets/readmeBanner.png" alt="Banner" width="100%">
 <h1 align="center">Basic Data Server Monitor</h1>
 
-This app is in development, so it's not ready for production use.
+This app is not fully ready, but you can use it. If you find any bug, please report it [here](http://github.com/firminsurgithub/bdsm-server/issues).
 
 ## Getting Started
 
