@@ -13,7 +13,7 @@ One you have installed the server, you can install the client [here](http://gith
 - [ ] Add "About" button and window (maybe in the Settings window ?)
 - [ ] Add "Export config" button (maybe in the Settings window ?)
 - [ ] Add service monitoring
-- [ ] Try the auto-update feature
+- [x] Try the auto-update feature
 
 ## License
 
