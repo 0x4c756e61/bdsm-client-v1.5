@@ -377,19 +377,6 @@ tr:nth-child(n + 2):hover {
   right: 10px;
 }
 
-#server-info-content .view-server-ressources {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  justify-content: space-between;
-}
-
-#server-info-content .view-server-ressources h2 {
-  width: calc(100% / 3);
-  text-align: left;
-  margin-right: 7px;
-}
-
 #soft-settings-modal #close-setting-view {
   float: right;
   position: relative;
@@ -400,6 +387,7 @@ tr:nth-child(n + 2):hover {
   font-size: 0.75em;
 }
 
+#server-info-content #view-server-ressources,
 #server-info-content .view-server-system {
   display: flex;
   flex-direction: row;
@@ -407,6 +395,7 @@ tr:nth-child(n + 2):hover {
   justify-content: space-between;
 }
 
+#server-info-content #view-server-ressources h2,
 #server-info-content .view-server-system h2 {
   width: calc(100% / 3);
   text-align: left;

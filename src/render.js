@@ -53,7 +53,11 @@ const viewPrettyName = document.querySelector("#view-server-name"),
     viewArch = document.querySelector("#view-server-arch"),
     viewCpuModel = document.querySelector("#view-cpu-model"),
     viewServerIP = document.querySelector("#view-server-ip"),
+    viewPlatform = document.querySelector("#view-server-platform"),
     viewOS = document.querySelector("#view-server-os");
+
+const truncateString = (str, maxLength) => str.length > maxLength ? str.slice(0, maxLength - 3) + "..." : str;
+
 
 /* Main Function */
 (async () => {
@@ -147,6 +151,7 @@ const viewPrettyName = document.querySelector("#view-server-name"),
         viewRam.innerHTML = "---";
         viewUptime.innerHTML = "---";
         viewArch.innerHTML = "---";
+        viewPlatform.innerHTML = "---";
         viewOS.innerHTML = "---";
         viewCpuModel.innerHTML = "---";
         viewServerIP.innerHTML = "---";
@@ -269,7 +274,8 @@ const viewPrettyName = document.querySelector("#view-server-name"),
                 (data.serverUptime % 3600) / 60
             )}M`;
         viewArch.innerHTML = error ? "---" : data.cpuArch;
-        viewOS.innerHTML = error ? "---" : data.osVersion;
+        viewPlatform.innerHTML = error ? "---" : data.osType;
+        viewOS.innerHTML = error ? "---" : truncateString(data.osVersion, 15);
         viewCpuModel.innerHTML = error
             ? "---"
             : `${data.cpuList[0].model} (${data.cpuList.length} cores)`;
