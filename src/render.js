@@ -419,9 +419,14 @@ const truncateString = (str, maxLength) => str.length > maxLength ? str.slice(0,
         for await (let [index, server] of fileserverlist.entries()) {
             updateServer(index, server);
         }
-        warningDiv.innerHTML = warnStatus
-            ? "❗ some servers deserve your attention"
-            : "✅ all servers are up and running";
+        if (fileserverlist.length == 0) {
+            warningDiv.innerHTML = "➕ ADD YOUR SERVERS";
+        }
+        else {
+            warningDiv.innerHTML = warnStatus
+                ? "❗ SOME SERVERS DESERVE YOUR ATTENTION"
+                : "✅ ALL SERVERS ARE UP AND RUNNING";
+        }
         if (viewingIndex == -1 && settingsList.discordRichPresence) {
             electron.ipcRenderer.send('update-rpc', { details: `Monitoring servers...`, state: warnStatus ? "Some servers are down ❗" : "All is fine 👌" });
         }
