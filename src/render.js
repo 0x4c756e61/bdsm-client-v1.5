@@ -29,7 +29,6 @@ let settingsList = {
     refresh: 2500,
     confidentialMode: false,
     discordRichPresence: false,
-    crashReports: false,
 };
 let updateInterval
 
@@ -100,17 +99,6 @@ const viewPrettyName = document.querySelector("#view-server-name"),
                 document.querySelector("#discord-rich .false").classList.add("active");
                 break;
         }
-        switch (settingsList.crashReports) {
-            case true:
-                document.querySelector("#crash-reports .false").classList.remove("active");
-                document.querySelector("#crash-reports .true").classList.add("active");
-                break;
-            default:
-                document.querySelector("#crash-reports .true").classList.remove("active");
-                document.querySelector("#crash-reports .false").classList.add("active");
-                break;
-        }
-
         settingsModal.style.setProperty("display", "block");
     });
 
@@ -173,13 +161,11 @@ const viewPrettyName = document.querySelector("#view-server-name"),
         const refreshTime = document.querySelector("#refresh-time").value
         const confidentialMode = document.querySelector("#confidential-mode .active").classList.contains("true");
         const discordRichPresence = document.querySelector("#discord-rich .active").classList.contains("true");
-        const crashReports = document.querySelector("#crash-reports .active").classList.contains("true");
         updateFileServerList();
         settingsList = {
             refresh: refreshTime,
             confidentialMode: confidentialMode,
-            discordRichPresence: discordRichPresence,
-            crashReports: crashReports
+            discordRichPresence: discordRichPresence
         }
         fs.writeFileSync(srvfilepath, JSON.stringify({ servers: fileserverlist, settings: settingsList }));
     }
