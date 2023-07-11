@@ -42,7 +42,7 @@ body {
 
 #app {
   margin: auto;
-  max-width: 50rem;
+  max-width: 55rem;
   padding: 2rem;
   height: min-content;
 }
@@ -50,11 +50,6 @@ body {
 #main-scroll {
   overflow: auto;
   height: calc(100vh - 30px);
-}
-
-#warning {
-  float: left;
-  clear: both;
 }
 
 /* Splash screen */
@@ -278,6 +273,9 @@ tr:nth-child(n + 2):hover {
   color: white;
   font-family: "Inter", sans-serif;
   font-variant: small-caps;
+  float: left;
+  clear: both;
+  font-size: 1.9em;
 }
 
 /* Modals and Settings */
@@ -469,20 +467,8 @@ tr:nth-child(n + 2):hover {
 }
 
 /* Responsiveness */
-@media screen and (max-width: 768px) {
-  #gridLayout {
-    display: block;
-  }
-
-  .card {
-    margin-bottom: 20px;
-  }
-
-  .card-btn {
-    top: -5px;
-  }
-
-  .card-status {
-    top: -15px;
+@media screen and (max-width: 55em) {
+  #warning {
+    font-size: 1.5em;
   }
 }
