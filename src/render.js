@@ -275,7 +275,8 @@ const truncateString = (str, maxLength) => str.length > maxLength ? str.slice(0,
             )}M`;
         viewArch.innerHTML = error ? "---" : data.cpuArch;
         viewPlatform.innerHTML = error ? "---" : data.osType;
-        viewOS.innerHTML = error ? "---" : truncateString(data.osVersion, 15);
+        // viewOS.innerHTML = error ? "---" : truncateString(data.osVersion, 15);
+        viewOS.innerHTML = error ? "---" : data.osVersion;
         viewCpuModel.innerHTML = error
             ? "---"
             : `${data.cpuList[0].model} (${data.cpuList.length} cores)`;
