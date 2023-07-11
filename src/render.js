@@ -440,3 +440,9 @@ const truncateString = (str, maxLength) => str.length > maxLength ? str.slice(0,
 electron.ipcRenderer.invoke("getAppVersion").then(async (versionNumber) => {
     document.querySelector("#version").innerHTML = versionNumber;
 });
+
+electron.ipcRenderer.invoke("getOS").then(async (os) => {
+    if (os == "linux") {
+        document.querySelector('.drag-area').remove()
+    }
+});

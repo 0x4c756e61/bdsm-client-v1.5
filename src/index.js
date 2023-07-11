@@ -134,3 +134,5 @@ if (fs.existsSync(path.join(app.getPath("userData"), "servers.json"))) {
     });
   }
 }
+
+ipcMain.handle("getOS", () => process.platform);
