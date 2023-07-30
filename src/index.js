@@ -15,7 +15,7 @@ Copyright 2023 Firmin B.
 */
 
 /* Dependencies */
-const { app, BrowserWindow, ipcMain } = require("electron"),
+const { app, BrowserWindow, ipcMain, dialog } = require("electron"),
   fs = require("node:fs"),
   path = require("node:path"),
   discordRPC = require("discord-rpc");
@@ -136,3 +136,35 @@ if (fs.existsSync(path.join(app.getPath("userData"), "servers.json"))) {
 }
 
 ipcMain.handle("getOS", () => process.platform);
+
+ipcMain.on("export-config", () => {
+  dialog.showSaveDialog({
+    title: "Export config",
+    defaultPath: path.join(app.getPath("documents"), "bdsm-config.json"),
+    filters: [{ name: "BDSM config file", extensions: ["json"] }],
+  }).then((result) => {
+    if (!result.canceled) {
+      fs.copyFileSync(path.join(app.getPath("userData"), "servers.json"), result.filePath);
+      console.log(result.filePath);
+    }
+  }).catch((err) => {
+    console.log(err);
+  })
+})
+
+ipcMain.handle("import-config", async () => {
+  let out = false
+  await dialog.showOpenDialog({
+    title: "Import config",
+    defaultPath: path.join(app.getPath("documents")),
+    filters: [{ name: "BDSM config file", extensions: ["json"] }],
+  }).then(async (result) => {
+    if (!result.canceled) {
+      await fs.copyFileSync(result.filePaths[0], path.join(app.getPath("userData"), "servers.json"));
+      out = true;
+    }
+  }).catch((err) => {
+    console.log(err);
+  })
+  return out;
+})

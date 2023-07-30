@@ -40,7 +40,9 @@ const addServerBtn = document.querySelector("#add-server"),
     saveServerBtn = document.querySelector("#modal-content-addbtn");
 const settingsBtn = document.querySelector("#set-soft"),
     settingsModal = document.querySelector("#soft-settings"),
-    saveSettingsBtn = document.querySelector("#soft-settings-save");
+    saveSettingsBtn = document.querySelector("#soft-settings-save"),
+    importConfBtn = document.querySelector("#import-config"),
+    exportConfBtn = document.querySelector("#export-config");
 const inputPrettyName = document.querySelector("#modal-content-prettyname"),
     inputIP = document.querySelector("#modal-content-ip"),
     inputPort = document.querySelector("#modal-content-port"),
@@ -57,7 +59,6 @@ const viewPrettyName = document.querySelector("#view-server-name"),
     viewOS = document.querySelector("#view-server-os");
 
 const truncateString = (str, maxLength) => str.length > maxLength ? str.slice(0, maxLength - 3) + "..." : str;
-
 
 /* Main Function */
 (async () => {
@@ -125,8 +126,8 @@ const truncateString = (str, maxLength) => str.length > maxLength ? str.slice(0,
     if (!fs.existsSync(srvfilepath)) {
         console.log("no file, creating one");
         fs.writeFileSync(srvfilepath, JSON.stringify({ servers: [], settings: settingsList }));
-        return;
     }
+
     try {
         settingsList = JSON.parse(fs.readFileSync(path.join(srvfilepath))).settings;
     } catch (error) { }
@@ -183,6 +184,19 @@ const truncateString = (str, maxLength) => str.length > maxLength ? str.slice(0,
         fileserverlist = JSON.parse(fs.readFileSync(srvfilepath, "utf8")).servers;
         settingsList = JSON.parse(fs.readFileSync(srvfilepath, "utf8")).settings;
     }
+
+    importConfBtn.addEventListener("click", async () => {
+        electron.ipcRenderer.invoke('import-config').then((data) => {
+            if (data == true) {
+                location.reload();
+            }
+        });
+    });
+
+    exportConfBtn.addEventListener("click", async () => {
+        updateFileServerList();
+        electron.ipcRenderer.send('export-config');
+    });
 
     function saveServer(index) {
         let errorForm = false;
@@ -442,7 +456,7 @@ electron.ipcRenderer.invoke("getAppVersion").then(async (versionNumber) => {
 });
 
 electron.ipcRenderer.invoke("getOS").then(async (os) => {
-    if (os == "linux") {
+    if (os != "win32") {
         document.querySelector('.drag-area').remove()
     }
 });
