@@ -40,6 +40,12 @@ body {
   box-sizing: border-box;
 }
 
+#logo {
+  margin: 0;
+  border-radius: 100%;
+  height: 35px;
+}
+
 #app {
   margin: auto;
   max-width: 55rem;
@@ -121,9 +127,24 @@ body {
   background-color: #211f2d;
 }
 
+/* Top Bar */
+
+#warning {
+  color: white;
+  font-family: "Inter", sans-serif;
+  font-variant: small-caps;
+  font-size: 1.9em;
+}
+
+#top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
 .top-btn {
-  float: right;
-  margin: 10px 5px;
+  margin: 0px 3px;
   height: 32px;
 }
 
@@ -132,26 +153,18 @@ body {
   width: 100%;
 }
 
-/* Logo and Grid Layout */
-#logo {
-  margin: 0;
-  border-radius: 100%;
-  height: 35px;
-}
-
+/* Grid Layout */
 #gridLayout {
   width: 100%;
   border-collapse: collapse;
-  /* box-shadow: 5px 5px 20px #22222222; */
   display: grid;
   grid-template-columns: 3fr 3fr 3fr;
-  gap: 30px;
+  gap: 20px;
 }
 
 /* Cards */
 .card {
   position: relative;
-  width: 100%;
   min-width: 120px;
   height: 110px;
   border-radius: 10px;
@@ -269,15 +282,6 @@ tr:nth-child(n + 2):hover {
   color: #6b6b6b;
 }
 
-#warning {
-  color: white;
-  font-family: "Inter", sans-serif;
-  font-variant: small-caps;
-  float: left;
-  clear: both;
-  font-size: 1.9em;
-}
-
 /* Modals and Settings */
 #modal,
 #server-info,
@@ -338,6 +342,26 @@ tr:nth-child(n + 2):hover {
   padding: 2px 0px;
   margin: 0px 8px;
   background-color: #727272;
+}
+
+#soft-settings-modal .combined-btn {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+#soft-settings-modal .combined-btn input {
+  height: 30px !important;
+}
+
+#soft-settings-modal .combined-btn :nth-child(1) {
+  border-radius: 2px 0px 0px 2px;
+  transform: translateX(0.125px);
+}
+
+#soft-settings-modal .combined-btn :nth-child(2) {
+  border-radius: 0px 2px 2px 0px;
+  transform: translateX(-0.125px);
 }
 
 #server-info-content {
