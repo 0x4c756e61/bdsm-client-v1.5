@@ -187,15 +187,14 @@ const truncateString = (str, maxLength) => str.length > maxLength ? str.slice(0,
         settingsList = JSON.parse(fs.readFileSync(srvfilepath, "utf8")).settings;
     }
 
-    importConfBtn.addEventListener("click", async () => {
-        electron.ipcRenderer.invoke('import-config').then((data) => {
-            if (data == true) {
+    importConfBtn.addEventListener("click", () => {
+        electron.ipcRenderer.invoke('import-config').then((success) => {
+            if (success)
                 location.reload();
-            }
         });
     });
 
-    exportConfBtn.addEventListener("click", async () => {
+    exportConfBtn.addEventListener("click", () => {
         updateFileServerList();
         electron.ipcRenderer.send('export-config');
     });
@@ -223,9 +222,8 @@ const truncateString = (str, maxLength) => str.length > maxLength ? str.slice(0,
         } else {
             inputPasswd.style.setProperty("border", "solid 1px hsl(246, 11%, 22%)");
         }
-        if (errorForm) {
-            return;
-        }
+
+        if (errorForm) return;
 
         let newJson = {
             prettyname: inputPrettyName.value,
@@ -246,6 +244,7 @@ const truncateString = (str, maxLength) => str.length > maxLength ? str.slice(0,
                 settings: settingsList,
             })
         );
+
         resetModal();
         updateServerList();
     }
@@ -280,21 +279,14 @@ const truncateString = (str, maxLength) => str.length > maxLength ? str.slice(0,
     };
 
     async function updateViewServer(data, server, error, status) {
-        viewPrettyName.innerHTML = `${status} ${server.prettyname.toUpperCase()} <span>(${error ? "---" : data.serverId
-            })</span>`;
+        viewPrettyName.innerHTML = `${status} ${server.prettyname.toUpperCase()} <span>(${error ? "---" : data.serverId})</span>`;
         viewCpu.innerHTML = error ? "---" : `${data.cpuUsage.toFixed(2)}%`;
         viewRam.innerHTML = error ? "---" : `${data.ramUsage}`;
-        viewUptime.innerHTML = error
-            ? "---"
-            : `${Math.floor(data.serverUptime / 3600)}H ${Math.floor(
-                (data.serverUptime % 3600) / 60
-            )}M`;
+        viewUptime.innerHTML = error ? "---" : `${Math.floor(data.serverUptime / 3600)}H ${Math.floor((data.serverUptime % 3600) / 60)}M`;
         viewArch.innerHTML = error ? "---" : data.cpuArch;
         viewPlatform.innerHTML = error ? "---" : data.osType;
         viewOS.innerHTML = error ? "---" : data.osVersion;
-        viewCpuModel.innerHTML = error
-            ? "---"
-            : `${data.cpuList[0].model} (${data.cpuList.length} cores)`;
+        viewCpuModel.innerHTML = error ? "---" : `${data.cpuList[0].model} (${data.cpuList.length} cores)`;
         viewServerIP.innerHTML = settingsList.confidentialMode ? "HIDDEN" : `${server.ip}`;
         if (settingsList.discordRichPresence) {
             electron.ipcRenderer.send('update-rpc', { details: `Viewing ${server.prettyname}`, state: error ? "Server offline" : `CPU : ${data.cpuUsage.toFixed(2)}% | RAM : ${data.ramPercent}` });
