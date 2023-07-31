@@ -123,14 +123,16 @@ const truncateString = (str, maxLength) => str.length > maxLength ? str.slice(0,
         }
     });
 
-    if (!fs.existsSync(srvfilepath)) {
-        console.log("no file, creating one");
+    if (!fs.existsSync(srvfilepath) || !(JSON.parse(fs.readFileSync(srvfilepath)).servers) || !(JSON.parse(fs.readFileSync(srvfilepath)).settings)) {
+        console.log("no file or file corrupted, creating one");
         fs.writeFileSync(srvfilepath, JSON.stringify({ servers: [], settings: settingsList }));
     }
 
     try {
         settingsList = JSON.parse(fs.readFileSync(path.join(srvfilepath))).settings;
-    } catch (error) { }
+    } catch (error) {
+        electron.ipcRenderer.send("error", "Error while reading settings file: \n" + error);
+    }
 
     function resetModal() {
         inputPrettyName.value = "";
@@ -164,7 +166,7 @@ const truncateString = (str, maxLength) => str.length > maxLength ? str.slice(0,
     }
 
     function saveSettings() {
-        const refreshTime = document.querySelector("#refresh-time").value
+        const refreshTime = parseInt(document.querySelector("#refresh-time").value);
         const confidentialMode = document.querySelector("#confidential-mode .active").classList.contains("true");
         const discordRichPresence = document.querySelector("#discord-rich .active").classList.contains("true");
         updateFileServerList();

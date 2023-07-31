@@ -145,10 +145,9 @@ ipcMain.on("export-config", () => {
   }).then((result) => {
     if (!result.canceled) {
       fs.copyFileSync(path.join(app.getPath("userData"), "servers.json"), result.filePath);
-      console.log(result.filePath);
     }
   }).catch((err) => {
-    console.log(err);
+    dialog.showErrorBox("Error", err)
   })
 })
 
@@ -160,11 +159,42 @@ ipcMain.handle("import-config", async () => {
     filters: [{ name: "BDSM config file", extensions: ["json"] }],
   }).then(async (result) => {
     if (!result.canceled) {
-      await fs.copyFileSync(result.filePaths[0], path.join(app.getPath("userData"), "servers.json"));
+      let datas
+      const errorMissingDatas = () => dialog.showErrorBox("Error", "Seems to be missing datas in the file or the file isn't a BDSM config file")
+
+      try {
+        datas = await JSON.parse(fs.readFileSync(result.filePaths[0], "utf8"))
+      } catch (error) {
+        return dialog.showErrorBox("Error", "JSON Parse error")
+      }
+
+      if (datas.servers) {
+        let serverIntegrity = true
+        datas.servers.forEach(server => {
+          if (!(server.prettyname && server.ip && server.port && server.password)) serverIntegrity = false
+        })
+        if (!serverIntegrity)
+          return errorMissingDatas()
+      }
+      else
+        return errorMissingDatas()
+
+      if (datas.settings) {
+        if (((typeof datas.settings.discordRichPresence) != "boolean") || ((typeof datas.settings.confidentialMode) != "boolean") || ((typeof datas.settings.refresh) != "number")) return errorMissingDatas()
+      }
+      else
+        errorMissingDatas()
+
+      await fs.writeFileSync(path.join(app.getPath("userData"), "servers.json"), JSON.stringify(datas));
+
       out = true;
     }
   }).catch((err) => {
-    console.log(err);
+    dialog.showErrorBox("Error", err)
   })
   return out;
+})
+
+ipcMain.on("error", (event, arg) => {
+  dialog.showErrorBox("Error", arg);
 })
