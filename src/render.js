@@ -52,7 +52,7 @@ const viewPrettyName = document.querySelector("#view-server-name"),
     viewCpu = document.querySelector("#view-server-cpu"),
     viewRam = document.querySelector("#view-server-ram"),
     viewUptime = document.querySelector("#view-server-uptime"),
-    viewArch = document.querySelector("#view-server-arch"),
+    viewHostname = document.querySelector("#view-server-hostname"),
     viewCpuModel = document.querySelector("#view-cpu-model"),
     viewServerIP = document.querySelector("#view-server-ip"),
     viewPlatform = document.querySelector("#view-server-platform"),
@@ -153,7 +153,7 @@ const truncateString = (str, maxLength) => str.length > maxLength ? str.slice(0,
         viewCpu.innerHTML = "---";
         viewRam.innerHTML = "---";
         viewUptime.innerHTML = "---";
-        viewArch.innerHTML = "---";
+        viewHostname.innerHTML = "---";
         viewPlatform.innerHTML = "---";
         viewOS.innerHTML = "---";
         viewCpuModel.innerHTML = "---";
@@ -280,10 +280,10 @@ const truncateString = (str, maxLength) => str.length > maxLength ? str.slice(0,
 
     async function updateViewServer(data, server, error, status) {
         viewPrettyName.innerHTML = `${status} ${server.prettyname.toUpperCase()} <span>(${error ? "---" : data.serverId})</span>`;
-        viewCpu.innerHTML = error ? "---" : `${data.cpuUsage.toFixed(2)}%`;
+        viewCpu.innerHTML = error ? "---" : `${data.cpuUsage.toFixed(2)}% <span id="cpu-arch">(${data.cpuArch})</span>`;
         viewRam.innerHTML = error ? "---" : `${data.ramUsage}`;
         viewUptime.innerHTML = error ? "---" : `${Math.floor(data.serverUptime / 3600)}H ${Math.floor((data.serverUptime % 3600) / 60)}M`;
-        viewArch.innerHTML = error ? "---" : data.cpuArch;
+        viewHostname.innerHTML = error ? "---" : data.serverHostname;
         viewPlatform.innerHTML = error ? "---" : data.osType;
         viewOS.innerHTML = error ? "---" : data.osVersion;
         viewCpuModel.innerHTML = error ? "---" : `${data.cpuList[0].model} (${data.cpuList.length} cores)`;
