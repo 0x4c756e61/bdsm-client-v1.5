@@ -21,21 +21,23 @@ module.exports = {
   },
   rebuildConfig: {},
   makers: [
-    // {
-    //   name: "@electron-forge/maker-zip",
-    //   platforms: ["darwin", "linux", "win32"],
-    // },
+    {
+      name: "@electron-forge/maker-zip",
+      platforms: ["darwin", "linux"],
+    },
     {
       name: "@electron-forge/maker-deb",
       config: {
         options: {
+          name: "bdsm-client",
+          productName: "BDSM Client",
+          genericName: "Basic Data Server Monitor Client",
+          description: "Basic server monitoring system",
           maintainer: "Firmin_",
+          categories: ["Utility"],
+          icon: "./src/assets/icon.png",
         },
       },
-    },
-    {
-      name: "@electron-forge/maker-rpm",
-      config: {},
     },
     {
       name: "@electron-forge/maker-squirrel",
