@@ -177,6 +177,7 @@ const truncateString = (str, maxLength) => str.length > maxLength ? str.slice(0,
         }
         fs.writeFileSync(srvfilepath, JSON.stringify({ servers: fileserverlist, settings: settingsList }));
     }
+
     saveSettingsBtn.addEventListener("click", () => {
         saveSettings();
         resetSettingsModal();
@@ -438,8 +439,8 @@ const truncateString = (str, maxLength) => str.length > maxLength ? str.slice(0,
         if (viewingIndex == -1 && settingsList.discordRichPresence) {
             electron.ipcRenderer.send('update-rpc', { details: `Monitoring servers...`, state: warnStatus ? "Some servers are down ❗" : "All is fine 👌" });
         }
-        warnStatus = false;
         setTimeout(updateServerList, settingsList.refresh);
+        warnStatus = false;
     }
     updateServerList();
 })()

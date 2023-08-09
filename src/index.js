@@ -20,9 +20,9 @@ const { app, BrowserWindow, ipcMain, dialog } = require("electron"),
   path = require("node:path"),
   discordRPC = require("discord-rpc");
 
-let userSettings
+let userSettings, rpcClient;
+
 const clientId = "1122502251253076080";
-let rpcClient;
 
 if (require("electron-squirrel-startup")) app.quit();
 
@@ -92,7 +92,8 @@ app.on("activate", () => {
 ipcMain.handle("getDataPath", () => app.getPath("userData"));
 
 /* Get app version for the renderer process */
-ipcMain.handle("getAppVersion", () => `${app.getVersion()}${app.isPackaged ? "" : " (Dev mode)"}`);
+let appVersion = () => { return `${app.getVersion()}${app.isPackaged ? "" : " (Dev mode)"}` };
+ipcMain.handle("getAppVersion", () => appVersion());
 
 
 /* Open dev tools for the renderer process */
@@ -113,7 +114,7 @@ if (fs.existsSync(path.join(app.getPath("userData"), "servers.json"))) {
         state: "Monitoring servers...",
         startTimestamp: date,
         largeImageKey: "https://i.imgur.com/uvfVu0P.png",
-        largeImageText: `${app.getVersion()}${app.isPackaged ? "" : " (Dev mode)"}`,
+        largeImageText: appVersion(),
         instance: false,
         buttons: [{ label: 'Github', url: 'https://github.com/firminsurgithub/bdsm-client' }]
       });
@@ -126,7 +127,7 @@ if (fs.existsSync(path.join(app.getPath("userData"), "servers.json"))) {
           details: arg.details,
           startTimestamp: date,
           largeImageKey: "https://i.imgur.com/uvfVu0P.png",
-          largeImageText: `${app.getVersion()}${app.isPackaged ? "" : " (Dev mode)"}`,
+          largeImageText: appVersion(),
           instance: false,
           buttons: [{ label: 'Github', url: 'https://github.com/firminsurgithub/bdsm-client' }]
         });
@@ -183,10 +184,11 @@ ipcMain.handle("import-config", async () => {
         if (((typeof datas.settings.discordRichPresence) != "boolean") || ((typeof datas.settings.confidentialMode) != "boolean") || ((typeof datas.settings.refresh) != "number")) return errorMissingDatas()
       }
       else
-        errorMissingDatas()
+        return errorMissingDatas()
 
       await fs.writeFileSync(path.join(app.getPath("userData"), "servers.json"), JSON.stringify(datas));
 
+      /* This variable tells to the renderer process that the config is imported */
       out = true;
     }
   }).catch((err) => {
