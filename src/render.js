@@ -16,7 +16,6 @@ Copyright 2023 Firmin B.
 
 /* Dependencies */
 const path = require("node:path"),
-    axios = require("axios"),
     fs = require("node:fs"),
     electron = require("electron");
 
@@ -30,7 +29,6 @@ let settingsList = {
     confidentialMode: false,
     discordRichPresence: false,
 };
-let updateInterval
 
 /* Usefull HTML elements */
 const addServerBtn = document.querySelector("#add-server"),
@@ -58,12 +56,18 @@ const viewPrettyName = document.querySelector("#view-server-name"),
     viewPlatform = document.querySelector("#view-server-platform"),
     viewOS = document.querySelector("#view-server-os");
 
-const truncateString = (str, maxLength) => str.length > maxLength ? str.slice(0, maxLength - 3) + "..." : str;
+const dragArea = document.querySelector(".drag-area");
 
 /* Main Function */
 (async () => {
     const dataPath = await electron.ipcRenderer.invoke("getDataPath");
     const srvfilepath = path.join(dataPath, "servers.json");
+
+    if (process.platform === "darwin") {
+        dragArea.style.setProperty("height", "30px");
+        document.querySelector("#app").style.setProperty("padding-top", "15px");
+        document.querySelector("#logo").remove();
+    }
 
     addServerBtn.addEventListener("click", () => {
         modalTitle.innerHTML = "New Server";
@@ -355,16 +359,13 @@ const truncateString = (str, maxLength) => str.length > maxLength ? str.slice(0,
             document.querySelector("#gridLayout").appendChild(cardDiv);
             div = document.querySelector(`#server-${index}`);
         }
-        await axios({
-            method: "post",
-            url: `http://${server.ip}:${server.port}/update`,
-            responseType: "stream",
+
+        await fetch(`http://${server.ip}:${server.port}/update`, {
+            method: "POST",
             headers: {
-                auth: server.password,
-            },
-            timeout: settingsList.refresh - 50,
-        }).then((response) => {
-            const data = JSON.parse(response.data);
+                auth: server.password
+            }
+        }).then((response) => response.json()).then((data) => {
             div.style.setProperty("--outline-color", "#2eff8c");
             document.querySelector(
                 `#card-title-${index}`
@@ -385,6 +386,8 @@ const truncateString = (str, maxLength) => str.length > maxLength ? str.slice(0,
                 updateViewServer(data, server, false, "🟢");
             }
         }).catch((error) => {
+            console.log(error);
+            
             warnStatus = true;
             let status = "🔴";
             let outlineColor = "#ff4943";
@@ -451,7 +454,7 @@ electron.ipcRenderer.invoke("getAppVersion").then(async (versionNumber) => {
 });
 
 electron.ipcRenderer.invoke("getOS").then(async (os) => {
-    if (os != "win32") {
+    if (os != "win32" && os != "darwin") {
         document.querySelector('.drag-area').remove()
     }
 });

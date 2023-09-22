@@ -13,7 +13,6 @@ Copyright 2023 Firmin B.
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-require("dotenv").config();
 
 module.exports = {
   packagerConfig: {
