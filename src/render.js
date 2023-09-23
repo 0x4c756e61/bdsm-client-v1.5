@@ -354,12 +354,14 @@ const dragArea = document.querySelector(".drag-area");
             div = document.querySelector(`#server-${index}`);
         }
 
+        let requestCode = 0;
+
         await fetch(`http://${server.ip}:${server.port}/update`, {
             method: "POST",
             headers: {
                 auth: server.password
             }
-        }).then((response) => response.json()).then((data) => {
+        }).then((response) => { requestCode = response.status; return response.json() }).then((data) => {
             div.style.setProperty("--outline-color", "#2eff8c");
             document.querySelector(
                 `#card-title-${index}`
@@ -380,26 +382,18 @@ const dragArea = document.querySelector(".drag-area");
                 updateViewServer(data, server, false, "🟢");
             }
         }).catch((error) => {
-            console.log(error);
-
             warnStatus = true;
             let status = "🔴";
             let outlineColor = "#ff4943";
-            if (error.response) {
-                switch (error.response.status) {
-                    case 200:
-                        status = "🟢";
-                        outlineColor = "#2eff8c";
-                        break;
-                    case 403:
-                        status = "🔐";
-                        outlineColor = "#f1ff73";
-                        break;
-                    default:
-                        status = "🟠";
-                        outlineColor = "#ffa83e";
-                        break;
-                }
+            switch (requestCode) {
+                case 200:
+                    status = "🟢";
+                    outlineColor = "#2eff8c";
+                    break;
+                case 403:
+                    status = "🔐";
+                    outlineColor = "#f1ff73";
+                    break;
             }
             div.style.setProperty("--outline-color", outlineColor);
             document.querySelector(`#card-status-${index}`).innerHTML = status;
