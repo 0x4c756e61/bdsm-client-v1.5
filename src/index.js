@@ -15,7 +15,7 @@ Copyright 2023 Firmin B.
 */
 
 /* Dependencies */
-const { app, BrowserWindow, ipcMain, dialog } = require("electron"),
+const { app, BrowserWindow, ipcMain, dialog, Menu, shell } = require("electron"),
   fs = require("node:fs"),
   path = require("node:path"),
   discordRPC = require("discord-rpc");
@@ -28,6 +28,60 @@ if (require("electron-squirrel-startup")) app.quit();
 
 /* Update electron app */
 require("update-electron-app")();
+
+/* Get platform icon */
+function getPlatformIcon(filename) {
+  let ext;
+  switch (process.platform) {
+    case 'win32':
+      ext = 'ico'
+      break
+    case 'darwin':
+      ext = 'icns'
+    case 'linux':
+      ext = 'png'
+      break
+    default:
+      ext = 'png'
+      break
+  }
+
+  return path.join(__dirname, 'assets', `${filename}.${ext}`)
+}
+
+/* Create menu */
+const menu = Menu.buildFromTemplate([
+  {
+    label: app.name,
+    submenu: [
+      {
+        label: "About BDSM",
+        click: () => {
+          dialog.showMessageBox({
+            title: "About BDSM",
+            type: "info",
+            message: "BDSM is a server monitor app.\n\nMade by Firmin B.",
+            buttons: ["Close", "Github"],
+            defaultId: 0,
+            icon: getPlatformIcon('icon')
+          }).then((result) => {
+            if (result.response === 1) {
+              shell.openExternal("https://github.com/firminsurgithub/bdsm-client");
+            }
+          });
+        }
+      },
+      {
+        label: "Quit",
+        click: () => {
+          app.quit();
+        },
+      },
+    ]
+  }
+]);
+
+Menu.setApplicationMenu(menu);
 
 /* Create window */
 const createWindow = () => {
@@ -60,31 +114,13 @@ const createWindow = () => {
     },
   });
 
-  function getPlatformIcon(filename) {
-    let ext
-    switch (process.platform) {
-      case 'win32':
-        ext = 'ico'
-        break
-      case 'darwin':
-        ext = 'icns'
-      case 'linux':
-        ext = 'png'
-        break
-      default:
-        ext = 'png'
-        break
-    }
-
-    return path.join(__dirname, 'assets', `${filename}.${ext}`)
-  }
-
   mainWindow.loadFile(path.join(__dirname, "index.html"));
 
   if (!app.isPackaged) {
     mainWindow.webContents.openDevTools();
     if (process.platform === "darwin")
       app.dock.setBadge("Dev");
+      app.dock.setIcon(getPlatformIcon('icon'));
   }
 
   /* Save window position and size on close */
