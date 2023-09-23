@@ -279,13 +279,13 @@ const dragArea = document.querySelector(".drag-area");
 
     async function updateViewServer(data, server, error, status) {
         viewPrettyName.innerHTML = `${status} ${server.prettyname.toUpperCase()} <span>(${error ? "---" : data.serverId})</span>`;
-        viewCpu.innerHTML = error ? "---" : `${data.cpuUsage.toFixed(2)}% <span id="cpu-arch">(${data.cpuArch})</span>`;
-        viewRam.innerHTML = error ? "---" : `${data.ramUsage}`;
+        viewCpu.innerHTML = error ? "---" : `${data.cpuUsage.toFixed(2)}% <span class="detail">(${data.cpuArch})</span>`;
+        viewRam.innerHTML = error ? "---" : `${data.ramUsage} <span class="detail">(${data.ramPercent})</span>`;
         viewUptime.innerHTML = error ? "---" : `${Math.floor(data.serverUptime / 3600)}H ${Math.floor((data.serverUptime % 3600) / 60)}M`;
         viewHostname.innerHTML = error ? "---" : data.serverHostname;
         viewPlatform.innerHTML = error ? "---" : data.osType;
         viewOS.innerHTML = error ? "---" : data.osVersion;
-        viewCpuModel.innerHTML = error ? "---" : `${data.cpuList[0].model} (${data.cpuList.length} cores)`;
+        viewCpuModel.innerHTML = error ? "---" : `${data.cpuList[0].model} <span class="detail">(${data.cpuList.length > 1 ? data.cpuList.length + " cores" : "1 core"})</span>`;
         viewServerIP.innerHTML = settingsList.confidentialMode ? "HIDDEN" : `${server.ip}`;
         if (settingsList.discordRichPresence) {
             electron.ipcRenderer.send('update-rpc', { details: `Viewing ${server.prettyname}`, state: error ? "Server offline" : `CPU : ${data.cpuUsage.toFixed(2)}% | RAM : ${data.ramPercent}` });

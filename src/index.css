@@ -388,7 +388,7 @@ tr:nth-child(n + 2):hover {
   color: #aaaaaac2;
 }
 
-#server-info-content #cpu-arch {
+.detail {
   color: #aaaaaac2;
   font-size: 0.7em;
 }
