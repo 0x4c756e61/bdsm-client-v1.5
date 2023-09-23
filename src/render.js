@@ -63,12 +63,6 @@ const dragArea = document.querySelector(".drag-area");
     const dataPath = await electron.ipcRenderer.invoke("getDataPath");
     const srvfilepath = path.join(dataPath, "servers.json");
 
-    if (process.platform === "darwin") {
-        dragArea.style.setProperty("height", "30px");
-        document.querySelector("#app").style.setProperty("padding-top", "15px");
-        document.querySelector("#logo").remove();
-    }
-
     addServerBtn.addEventListener("click", () => {
         modalTitle.innerHTML = "New Server";
         addServerModal.style.setProperty("display", "block");
@@ -387,7 +381,7 @@ const dragArea = document.querySelector(".drag-area");
             }
         }).catch((error) => {
             console.log(error);
-            
+
             warnStatus = true;
             let status = "🔴";
             let outlineColor = "#ff4943";
@@ -453,8 +447,11 @@ electron.ipcRenderer.invoke("getAppVersion").then(async (versionNumber) => {
     document.querySelector("#version").innerHTML = versionNumber;
 });
 
-electron.ipcRenderer.invoke("getOS").then(async (os) => {
-    if (os != "win32" && os != "darwin") {
-        document.querySelector('.drag-area').remove()
-    }
-});
+if (process.platform === "linux") {
+    document.querySelector('.drag-area').remove()
+}
+else if (process.platform === "darwin") {
+    dragArea.style.setProperty("height", "30px");
+    document.querySelector("#app").style.setProperty("padding-top", "15px");
+    document.querySelector("#logo").remove();
+}

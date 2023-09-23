@@ -32,7 +32,6 @@ require("update-electron-app")();
 /* Mac dock icon configuration */
 if (process.platform === "darwin") app.dock.setIcon(path.join(__dirname, "assets/icon.png"));
 
-
 /* Create window */
 const createWindow = () => {
   const initPath = path.join(app.getPath("userData"), "window.json");
@@ -47,7 +46,7 @@ const createWindow = () => {
     minWidth: 800,
     minHeight: 500,
     backgroundColor: "#13111c",
-    icon: path.join(__dirname, "assets/icon.ico"),
+    icon: getPlatformIcon('icon'),
     width: data && data.bounds.width ? data.bounds.width : 800,
     height: data && data.bounds.height ? data.bounds.height : 600,
     webPreferences: {
@@ -64,13 +63,33 @@ const createWindow = () => {
     },
   });
 
+  function getPlatformIcon(filename) {
+    let ext
+    switch (process.platform) {
+      case 'win32':
+        ext = 'ico'
+        break
+      case 'darwin':
+        ext = 'icns'
+      case 'linux':
+        ext = 'png'
+        break
+      default:
+        ext = 'png'
+        break
+    }
+
+    return path.join(__dirname, 'assets', `${filename}.${ext}`)
+  }
+
   mainWindow.loadFile(path.join(__dirname, "index.html"));
 
   if (!app.isPackaged) {
     mainWindow.webContents.openDevTools();
-    app.dock.setBadge("Dev");
+    if (process.platform === "darwin")
+      app.dock.setBadge("Dev");
   }
-  
+
   /* Save window position and size on close */
   mainWindow.on("close", function () {
     var data = {
@@ -99,8 +118,8 @@ ipcMain.handle("getDataPath", () => app.getPath("userData"));
 
 /* Get app version for the renderer process */
 let appVersion = () => { return `${app.getVersion()}${app.isPackaged ? "" : " (Dev mode)"}` };
-ipcMain.handle("getAppVersion", () => appVersion());
 
+ipcMain.handle("getAppVersion", () => appVersion());
 
 /* Open dev tools for the renderer process */
 ipcMain.handle("openDevTools", () =>
@@ -141,8 +160,6 @@ if (fs.existsSync(path.join(app.getPath("userData"), "servers.json"))) {
     });
   }
 }
-
-ipcMain.handle("getOS", () => process.platform);
 
 ipcMain.on("export-config", () => {
   dialog.showSaveDialog({

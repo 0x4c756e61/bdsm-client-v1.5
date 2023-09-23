@@ -23,3 +23,4 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 ## Special Thanks
 
 - [**@0x454d505459**](http://github.com/0x454d505459) - Contributor
+- [**@Zarox28**](http://github.com/Zarox28) - Contributor
