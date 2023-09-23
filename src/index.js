@@ -29,9 +29,6 @@ if (require("electron-squirrel-startup")) app.quit();
 /* Update electron app */
 require("update-electron-app")();
 
-/* Mac dock icon configuration */
-if (process.platform === "darwin") app.dock.setIcon(path.join(__dirname, "assets/icon.png"));
-
 /* Create window */
 const createWindow = () => {
   const initPath = path.join(app.getPath("userData"), "window.json");
