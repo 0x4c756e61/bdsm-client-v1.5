@@ -11,9 +11,9 @@ One you have installed the server, you can install the client [here](http://gith
 ## To Do
 
 - [ ] Add "About" button and window (maybe in the Settings window ?)
-- [ ] Add "Export config" button (maybe in the Settings window ?)
+- [x] Add "Export config" button (maybe in the Settings window ?)
 - [ ] Add service monitoring
-- [x] Try the auto-update feature
+- [ ] Rewrite render.js
 
 ## License
 
