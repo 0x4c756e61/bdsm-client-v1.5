@@ -119,9 +119,10 @@ const createWindow = () => {
 
   if (!app.isPackaged) {
     mainWindow.webContents.openDevTools();
-    if (process.platform === "darwin")
+    if (process.platform === "darwin") {
       app.dock.setBadge("Dev");
       app.dock.setIcon(getPlatformIcon('icon'));
+    }
   }
 
   /* Save window position and size on close */

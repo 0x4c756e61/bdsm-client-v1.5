@@ -27,7 +27,7 @@ let viewingIndex = -1;
 let settingsList = {
     refresh: 2500,
     confidentialMode: false,
-    discordRichPresence: false,
+    discordRichPresence: false
 };
 
 /* Usefull HTML elements */
@@ -287,6 +287,7 @@ const dragArea = document.querySelector(".drag-area");
         viewOS.innerHTML = error ? "---" : data.osVersion;
         viewCpuModel.innerHTML = error ? "---" : `${data.cpuList[0].model} <span class="detail">(${data.cpuList.length > 1 ? data.cpuList.length + " cores" : "1 core"})</span>`;
         viewServerIP.innerHTML = settingsList.confidentialMode ? "HIDDEN" : `${server.ip}`;
+        
         if (settingsList.discordRichPresence) {
             electron.ipcRenderer.send('update-rpc', { details: `Viewing ${server.prettyname}`, state: error ? "Server offline" : `CPU : ${data.cpuUsage.toFixed(2)}% | RAM : ${data.ramPercent}` });
         }
