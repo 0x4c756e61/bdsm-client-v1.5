@@ -73,6 +73,7 @@ const menu = Menu.buildFromTemplate([
       },
       {
         label: "Quit",
+        accelerator: "CmdOrCtrl+Q",
         click: () => {
           app.quit();
         },
@@ -125,20 +126,12 @@ const createWindow = () => {
 
   /* Save window position and size on close */
   mainWindow.on("close", function () {
-    var data = {
-      bounds: mainWindow.getBounds(),
-    };
+    let data = { bounds: mainWindow.getBounds() };
     fs.writeFileSync(initPath, JSON.stringify(data));
   });
 };
 
 app.on("ready", createWindow);
-
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
-});
 
 app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) {
