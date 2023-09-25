@@ -380,20 +380,17 @@ const dragArea = document.querySelector(".drag-area");
             }
         }).then((response) => { requestCode = response.status; return response.json() }).then((data) => {
             div.style.setProperty("--outline-color", "#2eff8c");
-            document.querySelector(
-                `#card-title-${index}`
-            ).innerHTML = `${server.prettyname.toLowerCase()} <span id="card-id">(${data.serverId
-            })</span>`;
-            document.querySelector(
-                `#card-platform-${index}`
-            ).innerHTML = `Running: ${data.osPlatform}`;
-            document.querySelector(
-                `#card-usage-${index}`
-            ).innerHTML = `RAM: ${data.ramUsage} (${data.ramPercent})`;
-            document.querySelector(
-                `#card-cpu-usage-${index}`
-            ).innerHTML = `CPU: ${data.cpuUsage.toFixed(2)}%`;
-            document.querySelector(`#card-status-${index}`).innerHTML = `🟢`;
+            document.querySelector(`#card-title-${index}`).innerHTML = `${server.prettyname.toLowerCase()} <span id="card-id">(${data.serverId})</span>`;
+            document.querySelector(`#card-platform-${index}`).innerHTML = `Running: ${data.osPlatform}`;
+            document.querySelector(`#card-usage-${index}`).innerHTML = `RAM: ${data.ramUsage} (${data.ramPercent})`;
+            document.querySelector(`#card-cpu-usage-${index}`).innerHTML = `CPU: ${data.cpuUsage.toFixed(2)}%`;
+            
+            if (data.ramPercent > 90 && data.cpuUsage > 90) {
+                document.querySelector(`#card-status-${index}`).innerHTML = "🟠";
+
+            } else {
+                document.querySelector(`#card-status-${index}`).innerHTML = "🟢";
+            }
 
             if (viewingIndex == index) {
                 updateViewServer(data, server, false, "🟢");
