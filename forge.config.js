@@ -16,7 +16,7 @@ Copyright 2023 Firmin B.
 
 module.exports = {
   packagerConfig: {
-    icon: "./src/assets/icon.ico",
+    icon: "./src/assets/imgs/icon.ico",
   },
   rebuildConfig: {},
   makers: [
@@ -34,15 +34,15 @@ module.exports = {
           description: "Basic server monitoring system",
           maintainer: "Firmin_",
           categories: ["Utility"],
-          icon: "./src/assets/icon.png",
+          icon: "./src/assets/imgs/icon.png",
         },
       },
     },
     {
       name: "@electron-forge/maker-squirrel",
       config: {
-        setupIcon: "./src/assets/icon.ico",
-        loadingGif: "./src/assets/install.gif",
+        setupIcon: "./src/assets/imgs/icon.ico",
+        loadingGif: "./src/assets/imgs/install.gif",
         iconUrl:
           "https://raw.githubusercontent.com/firminsurgithub/bdsm-client/master/src/assets/icon.ico",
       },

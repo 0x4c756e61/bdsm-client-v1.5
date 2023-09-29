@@ -15,13 +15,14 @@ Copyright 2023 Firmin B.
 */
 
 /* Dependencies */
-const path = require("node:path"),
-    fs = require("node:fs"),
+const path = require("path"),
+    fs = require("fs"),
     electron = require("electron");
 
 /* Global variables */
 let fileserverlist;
 let warnStatus = false;
+let warnNotificationSended = false;
 let editingIndex = -1;
 let viewingIndex = -1;
 let settingsList = {
@@ -395,10 +396,12 @@ const dragArea = document.querySelector(".drag-area");
             if (viewingIndex == index) {
                 updateViewServer(data, server, false, "🟢");
             }
+
         }).catch((error) => {
             warnStatus = true;
             let status = "🔴";
             let outlineColor = "#ff4943";
+
             switch (requestCode) {
                 case 200:
                     status = "🟢";
@@ -411,16 +414,11 @@ const dragArea = document.querySelector(".drag-area");
             }
             div.style.setProperty("--outline-color", outlineColor);
             document.querySelector(`#card-status-${index}`).innerHTML = status;
-            document.querySelector(
-                `#card-title-${index}`
-            ).innerHTML = `${server.prettyname.toLowerCase()} <span id="card-id">(---)</span>`;
-            document.querySelector(
-                `#card-platform-${index}`
-            ).innerHTML = `Running: ---`;
+            document.querySelector(`#card-title-${index}`).innerHTML = `${server.prettyname.toLowerCase()} <span id="card-id">(---)</span>`;
+            document.querySelector(`#card-platform-${index}`).innerHTML = `Running: ---`;
             document.querySelector(`#card-usage-${index}`).innerHTML = `RAM: ---`;
-            document.querySelector(
-                `#card-cpu-usage-${index}`
-            ).innerHTML = `CPU: ---%`;
+            document.querySelector(`#card-cpu-usage-${index}`).innerHTML = `CPU: ---%`;
+            
             if (viewingIndex === index) {
                 updateViewServer(null, server, true, status);
             }
@@ -429,6 +427,7 @@ const dragArea = document.querySelector(".drag-area");
 
     /* Update the server list */
     async function updateServerList() {
+
         updateFileServerList();
         for await (let [index, server] of fileserverlist.entries()) {
             updateServer(index, server);
@@ -441,6 +440,20 @@ const dragArea = document.querySelector(".drag-area");
                 ? "❗ SOME SERVERS DESERVE YOUR ATTENTION"
                 : "✅ ALL SERVERS ARE UP AND RUNNING";
         }
+
+        if (warnStatus) {
+            if (!warnNotificationSended) {
+                electron.ipcRenderer.send("offline-notification");
+                warnNotificationSended = true;
+            }
+        
+        } else {
+            if (warnNotificationSended) {
+                electron.ipcRenderer.send("online-notification");
+                warnNotificationSended = false;
+            }
+        }
+
         if (viewingIndex == -1 && settingsList.discordRichPresence) {
             electron.ipcRenderer.send('update-rpc', { details: `Monitoring servers...`, state: warnStatus ? "Some servers are down ❗" : "All is fine 👌" });
         }
@@ -459,7 +472,7 @@ if (process.platform === "linux") {
     document.querySelector('.drag-area').remove()
 }
 else if (process.platform === "darwin") {
-    dragArea.style.setProperty("height", "30px");
+    dragArea.style.setProperty("height", "35px");
     document.querySelector("#app").style.setProperty("padding-top", "15px");
     document.querySelector("#logo").remove();
 }

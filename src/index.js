@@ -15,9 +15,9 @@ Copyright 2023 Firmin B.
 */
 
 /* Dependencies */
-const { app, BrowserWindow, ipcMain, dialog, Menu, shell } = require("electron"),
-  fs = require("node:fs"),
-  path = require("node:path"),
+const { app, BrowserWindow, ipcMain, dialog, Menu, shell, Notification } = require("electron"),
+  fs = require("fs"),
+  path = require("path"),
   discordRPC = require("discord-rpc");
 
 let userSettings, rpcClient;
@@ -46,7 +46,7 @@ function getPlatformIcon(filename) {
       break
   }
 
-  return path.join(__dirname, 'assets', `${filename}.${ext}`)
+  return path.join(__dirname, 'assets', 'imgs', `${filename}.${ext}`)
 }
 
 /* Create menu */
@@ -200,7 +200,7 @@ ipcMain.on("export-config", () => {
   }).catch((err) => {
     dialog.showErrorBox("Error", err)
   })
-})
+});
 
 ipcMain.handle("import-config", async () => {
   let out = false
@@ -245,8 +245,22 @@ ipcMain.handle("import-config", async () => {
     dialog.showErrorBox("Error", err)
   })
   return out;
-})
+});
 
 ipcMain.on("error", (event, arg) => {
   dialog.showErrorBox("Error", arg);
-})
+});
+
+ipcMain.on("offline-notification", () => {
+  new Notification({
+    title: "Offline alert!",
+    body: "One or more servers deserve your attention"
+  }).show();
+});
+
+ipcMain.on("online-notification", () => {
+  new Notification({
+    title: "Online alert!",
+    body: "One or more servers are back online"
+  }).show();
+});
