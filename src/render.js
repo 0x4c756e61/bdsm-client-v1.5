@@ -17,6 +17,7 @@ Copyright 2023 Firmin B.
 /* Dependencies */
 const path = require("path"),
     fs = require("fs"),
+    moment = require("moment")
     electron = require("electron");
 
 /* Global variables */
@@ -279,10 +280,12 @@ const dragArea = document.querySelector(".drag-area");
     };
 
     async function updateViewServer(data, server, error, status) {
+        const serverUptimeDate = moment.duration(data.serverUptime, "seconds");
+
         viewPrettyName.innerHTML = `${status} ${server.prettyname.toUpperCase()} <span>(${error ? "---" : data.serverId})</span>`;
         viewCpu.innerHTML = error ? "---" : `${data.cpuUsage.toFixed(2)}% <span class="detail">(${data.cpuArch})</span>`;
         viewRam.innerHTML = error ? "---" : `${data.ramUsage} <span class="detail">(${data.ramPercent})</span>`;
-        viewUptime.innerHTML = error ? "---" : `${Math.floor(data.serverUptime / 3600)}H ${Math.floor((data.serverUptime % 3600) / 60)}M`;
+        viewUptime.innerHTML = error ? "---" : serverUptimeDate.get("days") + "D " + serverUptimeDate.get("hours") + "H " + serverUptimeDate.get("minutes") + "M";
         viewHostname.innerHTML = error ? "---" : data.serverHostname;
         viewPlatform.innerHTML = error ? "---" : data.osType;
         viewOS.innerHTML = error ? "---" : data.osVersion;
