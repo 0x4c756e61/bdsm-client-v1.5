@@ -15,19 +15,21 @@ Copyright 2023 Firmin B.
 */
 
 /* Dependencies */
-const path = require("node:path"),
-    fs = require("node:fs"),
+const path = require("path"),
+    fs = require("fs"),
+    moment = require("moment")
     electron = require("electron");
 
 /* Global variables */
 let fileserverlist;
 let warnStatus = false;
+let warnNotificationSended = false;
 let editingIndex = -1;
 let viewingIndex = -1;
 let settingsList = {
     refresh: 2500,
     confidentialMode: false,
-    discordRichPresence: false,
+    discordRichPresence: false
 };
 
 /* Usefull HTML elements */
@@ -278,15 +280,34 @@ const dragArea = document.querySelector(".drag-area");
     };
 
     async function updateViewServer(data, server, error, status) {
+        const serverUptimeDate = moment.duration(data.serverUptime, "seconds");
+
         viewPrettyName.innerHTML = `${status} ${server.prettyname.toUpperCase()} <span>(${error ? "---" : data.serverId})</span>`;
         viewCpu.innerHTML = error ? "---" : `${data.cpuUsage.toFixed(2)}% <span class="detail">(${data.cpuArch})</span>`;
         viewRam.innerHTML = error ? "---" : `${data.ramUsage} <span class="detail">(${data.ramPercent})</span>`;
-        viewUptime.innerHTML = error ? "---" : `${Math.floor(data.serverUptime / 3600)}H ${Math.floor((data.serverUptime % 3600) / 60)}M`;
+        viewUptime.innerHTML = error ? "---" : serverUptimeDate.get("days") + "D " + serverUptimeDate.get("hours") + "H " + serverUptimeDate.get("minutes") + "M";
         viewHostname.innerHTML = error ? "---" : data.serverHostname;
         viewPlatform.innerHTML = error ? "---" : data.osType;
         viewOS.innerHTML = error ? "---" : data.osVersion;
         viewCpuModel.innerHTML = error ? "---" : `${data.cpuList[0].model} <span class="detail">(${data.cpuList.length > 1 ? data.cpuList.length + " cores" : "1 core"})</span>`;
-        viewServerIP.innerHTML = settingsList.confidentialMode ? "HIDDEN" : `${server.ip}`;
+
+        if (!settingsList.confidentialMode) {
+            const viewServerIPText = viewServerIP.innerHTML = `${server.ip} <svg id="ip-clipboard-logo" xmlns="http://www.w3.org/2000/svg" height="0.7em" viewBox="0 0 384 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><style>svg{fill:#aaaaaac2}</style><path d="M280 64h40c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128C0 92.7 28.7 64 64 64h40 9.6C121 27.5 153.3 0 192 0s71 27.5 78.4 64H280zM64 112c-8.8 0-16 7.2-16 16V448c0 8.8 7.2 16 16 16H320c8.8 0 16-7.2 16-16V128c0-8.8-7.2-16-16-16H304v24c0 13.3-10.7 24-24 24H192 104c-13.3 0-24-10.7-24-24V112H64zm128-8a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/></svg>`;
+
+            document.querySelector("#ip-clipboard-logo").style.setProperty("cursor", "pointer");
+
+            document.querySelector("#ip-clipboard-logo").addEventListener("click", () => {
+                electron.clipboard.writeText(server.ip);
+
+                viewServerIP.innerHTML = `${server.ip} <svg xmlns="http://www.w3.org/2000/svg" height="0.7em" viewBox="0 0 384 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><style>svg{fill:#2eff8c}</style><path d="M192 0c-41.8 0-77.4 26.7-90.5 64H64C28.7 64 0 92.7 0 128V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H282.5C269.4 26.7 233.8 0 192 0zm0 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM305 273L177 401c-9.4 9.4-24.6 9.4-33.9 0L79 337c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L271 239c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg>`;
+            
+                setTimeout(() => { viewServerIPText }, 1500);
+            });
+        
+        } else {
+            viewServerIP.innerHTML = "HIDDEN";
+        }
+
         if (settingsList.discordRichPresence) {
             electron.ipcRenderer.send('update-rpc', { details: `Viewing ${server.prettyname}`, state: error ? "Server offline" : `CPU : ${data.cpuUsage.toFixed(2)}% | RAM : ${data.ramPercent}` });
         }
@@ -363,28 +384,27 @@ const dragArea = document.querySelector(".drag-area");
             }
         }).then((response) => { requestCode = response.status; return response.json() }).then((data) => {
             div.style.setProperty("--outline-color", "#2eff8c");
-            document.querySelector(
-                `#card-title-${index}`
-            ).innerHTML = `${server.prettyname.toLowerCase()} <span id="card-id">(${data.serverId
-            })</span>`;
-            document.querySelector(
-                `#card-platform-${index}`
-            ).innerHTML = `Running: ${data.osPlatform}`;
-            document.querySelector(
-                `#card-usage-${index}`
-            ).innerHTML = `RAM: ${data.ramUsage} (${data.ramPercent})`;
-            document.querySelector(
-                `#card-cpu-usage-${index}`
-            ).innerHTML = `CPU: ${data.cpuUsage.toFixed(2)}%`;
-            document.querySelector(`#card-status-${index}`).innerHTML = `🟢`;
+            document.querySelector(`#card-title-${index}`).innerHTML = `${server.prettyname.toLowerCase()} <span id="card-id">(${data.serverId})</span>`;
+            document.querySelector(`#card-platform-${index}`).innerHTML = `Running: ${data.osPlatform}`;
+            document.querySelector(`#card-usage-${index}`).innerHTML = `RAM: ${data.ramUsage} (${data.ramPercent})`;
+            document.querySelector(`#card-cpu-usage-${index}`).innerHTML = `CPU: ${data.cpuUsage.toFixed(2)}%`;
+            
+            if (data.ramPercent > 90 && data.cpuUsage > 90) {
+                document.querySelector(`#card-status-${index}`).innerHTML = "🟠";
+
+            } else {
+                document.querySelector(`#card-status-${index}`).innerHTML = "🟢";
+            }
 
             if (viewingIndex == index) {
                 updateViewServer(data, server, false, "🟢");
             }
+
         }).catch((error) => {
             warnStatus = true;
             let status = "🔴";
             let outlineColor = "#ff4943";
+
             switch (requestCode) {
                 case 200:
                     status = "🟢";
@@ -397,16 +417,11 @@ const dragArea = document.querySelector(".drag-area");
             }
             div.style.setProperty("--outline-color", outlineColor);
             document.querySelector(`#card-status-${index}`).innerHTML = status;
-            document.querySelector(
-                `#card-title-${index}`
-            ).innerHTML = `${server.prettyname.toLowerCase()} <span id="card-id">(---)</span>`;
-            document.querySelector(
-                `#card-platform-${index}`
-            ).innerHTML = `Running: ---`;
+            document.querySelector(`#card-title-${index}`).innerHTML = `${server.prettyname.toLowerCase()} <span id="card-id">(---)</span>`;
+            document.querySelector(`#card-platform-${index}`).innerHTML = `Running: ---`;
             document.querySelector(`#card-usage-${index}`).innerHTML = `RAM: ---`;
-            document.querySelector(
-                `#card-cpu-usage-${index}`
-            ).innerHTML = `CPU: ---%`;
+            document.querySelector(`#card-cpu-usage-${index}`).innerHTML = `CPU: ---%`;
+            
             if (viewingIndex === index) {
                 updateViewServer(null, server, true, status);
             }
@@ -415,6 +430,7 @@ const dragArea = document.querySelector(".drag-area");
 
     /* Update the server list */
     async function updateServerList() {
+
         updateFileServerList();
         for await (let [index, server] of fileserverlist.entries()) {
             updateServer(index, server);
@@ -427,6 +443,20 @@ const dragArea = document.querySelector(".drag-area");
                 ? "❗ SOME SERVERS DESERVE YOUR ATTENTION"
                 : "✅ ALL SERVERS ARE UP AND RUNNING";
         }
+
+        if (warnStatus) {
+            if (!warnNotificationSended) {
+                electron.ipcRenderer.send("offline-notification");
+                warnNotificationSended = true;
+            }
+        
+        } else {
+            if (warnNotificationSended) {
+                electron.ipcRenderer.send("online-notification");
+                warnNotificationSended = false;
+            }
+        }
+
         if (viewingIndex == -1 && settingsList.discordRichPresence) {
             electron.ipcRenderer.send('update-rpc', { details: `Monitoring servers...`, state: warnStatus ? "Some servers are down ❗" : "All is fine 👌" });
         }
@@ -445,7 +475,7 @@ if (process.platform === "linux") {
     document.querySelector('.drag-area').remove()
 }
 else if (process.platform === "darwin") {
-    dragArea.style.setProperty("height", "30px");
+    dragArea.style.setProperty("height", "35px");
     document.querySelector("#app").style.setProperty("padding-top", "15px");
     document.querySelector("#logo").remove();
 }
