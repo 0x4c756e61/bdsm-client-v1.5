@@ -107,7 +107,7 @@ const createWindow = () => {
       contextIsolation: false,
       sandbox: false,
     },
-    titleBarStyle: "hidden",
+    titleBarStyle: app.isPackaged ? "hidden" : "default",
     titleBarOverlay: {
       height: 30,
       color: "#13111c",
@@ -251,16 +251,11 @@ ipcMain.on("error", (event, arg) => {
   dialog.showErrorBox("Error", arg);
 });
 
-ipcMain.on("offline-notification", () => {
+ipcMain.on("notification", (event, title, body) => {
   new Notification({
-    title: "Offline alert!",
-    body: "One or more servers deserve your attention"
-  }).show();
-});
-
-ipcMain.on("online-notification", () => {
-  new Notification({
-    title: "Online alert!",
-    body: "One or more servers are back online"
+    title: "BDSM Client",
+    subtitle: title,
+    body: body,
+    icon: getPlatformIcon('icon')
   }).show();
 });

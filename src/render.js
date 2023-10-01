@@ -444,13 +444,13 @@ const dragArea = document.querySelector(".drag-area");
 
         if (warnStatus) {
             if (!warnNotificationSended) {
-                electron.ipcRenderer.send("offline-notification");
+                electron.ipcRenderer.send("notification", "Offline alert!", "One or more servers deserve your attention");
                 warnNotificationSended = true;
             }
 
         } else {
             if (warnNotificationSended) {
-                electron.ipcRenderer.send("online-notification");
+                electron.ipcRenderer.send("notification", "Online alert!", "One or more servers are back online");
                 warnNotificationSended = false;
             }
         }
