@@ -17,7 +17,7 @@ Copyright 2023 Firmin B.
 /* Dependencies */
 const path = require("path"),
     fs = require("fs"),
-    moment = require("moment")
+    moment = require("moment"),
     electron = require("electron");
 
 /* Global variables */
@@ -280,12 +280,10 @@ const dragArea = document.querySelector(".drag-area");
     };
 
     async function updateViewServer(data, server, error, status) {
-        const serverUptimeDate = moment.duration(data.serverUptime, "seconds");
-
         viewPrettyName.innerHTML = `${status} ${server.prettyname.toUpperCase()} <span>(${error ? "---" : data.serverId})</span>`;
         viewCpu.innerHTML = error ? "---" : `${data.cpuUsage.toFixed(2)}% <span class="detail">(${data.cpuArch})</span>`;
         viewRam.innerHTML = error ? "---" : `${data.ramUsage} <span class="detail">(${data.ramPercent})</span>`;
-        viewUptime.innerHTML = error ? "---" : serverUptimeDate.get("days") + "D " + serverUptimeDate.get("hours") + "H " + serverUptimeDate.get("minutes") + "M";
+        viewUptime.innerHTML = error ? "---" : moment.duration(data.serverUptime, "seconds").get("days") + "D " + moment.duration(data.serverUptime, "seconds").get("hours") + "H " + moment.duration(data.serverUptime, "seconds").get("minutes") + "M";
         viewHostname.innerHTML = error ? "---" : data.serverHostname;
         viewPlatform.innerHTML = error ? "---" : data.osType;
         viewOS.innerHTML = error ? "---" : data.osVersion;
@@ -300,10 +298,10 @@ const dragArea = document.querySelector(".drag-area");
                 electron.clipboard.writeText(server.ip);
 
                 viewServerIP.innerHTML = `${server.ip} <svg xmlns="http://www.w3.org/2000/svg" height="0.7em" viewBox="0 0 384 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><style>svg{fill:#2eff8c}</style><path d="M192 0c-41.8 0-77.4 26.7-90.5 64H64C28.7 64 0 92.7 0 128V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H282.5C269.4 26.7 233.8 0 192 0zm0 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM305 273L177 401c-9.4 9.4-24.6 9.4-33.9 0L79 337c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L271 239c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg>`;
-            
+
                 setTimeout(() => { viewServerIPText }, 1500);
             });
-        
+
         } else {
             viewServerIP.innerHTML = "HIDDEN";
         }
@@ -388,7 +386,7 @@ const dragArea = document.querySelector(".drag-area");
             document.querySelector(`#card-platform-${index}`).innerHTML = `Running: ${data.osPlatform}`;
             document.querySelector(`#card-usage-${index}`).innerHTML = `RAM: ${data.ramUsage} (${data.ramPercent})`;
             document.querySelector(`#card-cpu-usage-${index}`).innerHTML = `CPU: ${data.cpuUsage.toFixed(2)}%`;
-            
+
             if (data.ramPercent > 90 && data.cpuUsage > 90) {
                 document.querySelector(`#card-status-${index}`).innerHTML = "🟠";
 
@@ -421,7 +419,7 @@ const dragArea = document.querySelector(".drag-area");
             document.querySelector(`#card-platform-${index}`).innerHTML = `Running: ---`;
             document.querySelector(`#card-usage-${index}`).innerHTML = `RAM: ---`;
             document.querySelector(`#card-cpu-usage-${index}`).innerHTML = `CPU: ---%`;
-            
+
             if (viewingIndex === index) {
                 updateViewServer(null, server, true, status);
             }
@@ -449,7 +447,7 @@ const dragArea = document.querySelector(".drag-area");
                 electron.ipcRenderer.send("offline-notification");
                 warnNotificationSended = true;
             }
-        
+
         } else {
             if (warnNotificationSended) {
                 electron.ipcRenderer.send("online-notification");
