@@ -72,6 +72,13 @@ const menu = Menu.buildFromTemplate([
         }
       },
       {
+        label: "Reload",
+        accelerator: "CmdOrCtrl+R",
+        click: () => {
+          BrowserWindow.getFocusedWindow().reload();
+        },
+      },
+      {
         label: "Quit",
         accelerator: "CmdOrCtrl+Q",
         click: () => {
@@ -107,6 +114,7 @@ const createWindow = () => {
       contextIsolation: false,
       sandbox: false,
     },
+    autoHideMenuBar: app.isPackaged,
     titleBarStyle: app.isPackaged ? "hidden" : "default",
     titleBarOverlay: {
       height: 30,
