@@ -280,14 +280,14 @@ const dragArea = document.querySelector(".drag-area");
     };
 
     async function updateViewServer(data, server, error, status) {
-        viewPrettyName.innerHTML = `${status} ${server.prettyname.toUpperCase()} <span>(${error ? "---" : data.serverId})</span>`;
-        viewCpu.innerHTML = error ? "---" : `${data.cpuUsage.toFixed(2)}% <span class="detail">(${data.cpuArch})</span>`;
-        viewRam.innerHTML = error ? "---" : `${data.ramUsage} <span class="detail">(${data.ramPercent})</span>`;
-        viewUptime.innerHTML = error ? "---" : moment.duration(data.serverUptime, "seconds").get("days") + "D " + moment.duration(data.serverUptime, "seconds").get("hours") + "H " + moment.duration(data.serverUptime, "seconds").get("minutes") + "M";
-        viewHostname.innerHTML = error ? "---" : data.serverHostname;
-        viewPlatform.innerHTML = error ? "---" : data.osType;
-        viewOS.innerHTML = error ? "---" : data.osVersion;
-        viewCpuModel.innerHTML = error ? "---" : `${data.cpuList[0].model} <span class="detail">(${data.cpuList.length > 1 ? data.cpuList.length + " cores" : "1 core"})</span>`;
+        viewPrettyName.innerHTML = `${status} ${server.prettyname.toUpperCase()} <span>(${error ? "---" : data.server.id})</span>`;
+        viewCpu.innerHTML = error ? "---" : `${data.server.cpu.usage.toFixed(2)}% <span class="detail">(${data.server.cpu.arch})</span>`;
+        viewRam.innerHTML = error ? "---" : `${data.server.ram.max - data.server.ram.free} kB <span class="detail">(${data.server.ram.percent}%)</span>`;
+        viewUptime.innerHTML = error ? "---" : moment.duration(data.server.uptime, "seconds").get("days") + "D " + moment.duration(data.server.uptime, "seconds").get("hours") + "H " + moment.duration(data.server.uptime, "seconds").get("minutes") + "M";
+        viewHostname.innerHTML = error ? "---" : data.server.hostname;
+        viewPlatform.innerHTML = error ? "---" : data.server.os.type;
+        viewOS.innerHTML = error ? "---" : data.server.os.version;
+        viewCpuModel.innerHTML = error ? "---" : `${data.server.cpu.model}`;
 
         if (!settingsList.confidentialMode) {
             const viewServerIPText = viewServerIP.innerHTML = `${server.ip} <svg id="ip-clipboard-logo" xmlns="http://www.w3.org/2000/svg" height="0.7em" viewBox="0 0 384 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><style>svg{fill:#aaaaaac2}</style><path d="M280 64h40c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128C0 92.7 28.7 64 64 64h40 9.6C121 27.5 153.3 0 192 0s71 27.5 78.4 64H280zM64 112c-8.8 0-16 7.2-16 16V448c0 8.8 7.2 16 16 16H320c8.8 0 16-7.2 16-16V128c0-8.8-7.2-16-16-16H304v24c0 13.3-10.7 24-24 24H192 104c-13.3 0-24-10.7-24-24V112H64zm128-8a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/></svg>`;
@@ -307,7 +307,7 @@ const dragArea = document.querySelector(".drag-area");
         }
 
         if (settingsList.discordRichPresence) {
-            electron.ipcRenderer.send('update-rpc', { details: `Viewing ${server.prettyname}`, state: error ? "Server offline" : `CPU : ${data.cpuUsage.toFixed(2)}% | RAM : ${data.ramPercent}` });
+            electron.ipcRenderer.send('update-rpc', { details: `Viewing ${server.prettyname}`, state: error ? "Server offline" : `CPU : ${data.server.cpu.usage.toFixed(2)}% | RAM : ${data.server.ram.percent}` });
         }
     }
 
@@ -375,17 +375,17 @@ const dragArea = document.querySelector(".drag-area");
 
         let requestCode = 0;
 
-        await fetch(`http://${server.ip}:${server.port}/update`, {
-            method: "POST",
+        await fetch(`http://${server.ip}:${server.port}/api`, {
+            method: "GET",
             headers: {
-                auth: server.password
+                Authorization: `Bearer ${server.password}`
             }
         }).then((response) => { requestCode = response.status; return response.json() }).then((data) => {
             div.style.setProperty("--outline-color", "#2eff8c");
-            document.querySelector(`#card-title-${index}`).innerHTML = `${server.prettyname.toLowerCase()} <span id="card-id">(${data.serverId})</span>`;
-            document.querySelector(`#card-platform-${index}`).innerHTML = `Running: ${data.osPlatform}`;
-            document.querySelector(`#card-usage-${index}`).innerHTML = `RAM: ${data.ramUsage} (${data.ramPercent})`;
-            document.querySelector(`#card-cpu-usage-${index}`).innerHTML = `CPU: ${data.cpuUsage.toFixed(2)}%`;
+            document.querySelector(`#card-title-${index}`).innerHTML = `${server.prettyname.toLowerCase()} <span id="card-id">(${data.server.id})</span>`;
+            document.querySelector(`#card-platform-${index}`).innerHTML = `Running: ${data.server.os.platform}`;
+            document.querySelector(`#card-usage-${index}`).innerHTML = `RAM: ${data.server.ram.max - data.server.ram.free }kB used (${data.server.ram.percent}%)`;
+            document.querySelector(`#card-cpu-usage-${index}`).innerHTML = `CPU: ${data.server.cpu.usage.toFixed(2)}%`;
 
             if (data.ramPercent > 90 && data.cpuUsage > 90) {
                 document.querySelector(`#card-status-${index}`).innerHTML = "🟠";
